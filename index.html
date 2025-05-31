@@ -997,4 +997,43 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+// Firebase 동기화 기능 추가
+let salesData = []; // 전역 변수로 변경
+
+// Firestore에서 데이터 실시간 동기화
+function setupFirebaseSync() {
+    db.collection("sales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        salesData = [];
+        snapshot.forEach((doc) => {
+            salesData.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        updateSalesTable();
+        updateTotalSales();
+    });
+}
+
+// 매출 추가 (Firestore에 저장)
+function addSale(date, customer, amount, description) {
+    // Firebase에 저장
+    addSaleToFirebase(date, customer, amount, description);
+}
+
+// 매출 삭제 (Firestore에서 삭제)
+function deleteSaleFromFirebase(saleId) {
+    db.collection("sales").doc(saleId).delete().then(() => {
+        console.log("매출이 성공적으로 삭제되었습니다!");
+    }).catch((error) => {
+        console.error("매출 삭제 오류:", error);
+        alert("매출 삭제에 실패했습니다.");
+    });
+}
+
+// 페이지 로드 시 Firebase 동기화 시작
+document.addEventListener('DOMContentLoaded', function() {
+    // 기존 init() 함수 대신 Firebase 동기화 사용
+    setupFirebaseSync();
+});
 </html>
