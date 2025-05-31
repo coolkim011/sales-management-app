@@ -1,0 +1,983 @@
+index.html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="매출관리">
+    <meta name="description" content="현금매출과 사업자매출을 쉽게 관리하는 앱">
+    <title>매출 관리 앱</title>
+    
+    <!-- 완벽한 앱 아이콘들 -->
+    <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHJ4PSI0OCIgZmlsbD0iIzJjM2U1MCIvPjxjaXJjbGUgY3g9Ijk2IiBjeT0iNzAiIHI9IjI0IiBmaWxsPSIjZmZkNzAwIi8+PHJlY3QgeD0iNDAiIHk9IjEyMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iODEiIHk9IjEyMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTIyIiB5PSIxMjAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+    
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI0MCIgZmlsbD0iIzJjM2U1MCIvPjxjaXJjbGUgY3g9IjkwIiBjeT0iNjUiIHI9IjIwIiBmaWxsPSIjZmZkNzAwIi8+PHJlY3QgeD0iMzUiIHk9IjExMCIgd2lkdGg9IjI1IiBoZWlnaHQ9IjM1IiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iNzAiIHk9IjExMCIgd2lkdGg9IjI1IiBoZWlnaHQ9IjM1IiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTA1IiB5PSIxMTAiIHdpZHRoPSIyNSIgaGVpZ2h0PSIzNSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+    
+    <!-- PWA 매니페스트 -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi66mA7LacIOq0gOumrCDslYHtlIQiLCJzaG9ydF9uYW1lIjoi66mA7LacIOq0gOumrCIsImRlc2NyaXB0aW9uIjoi7ZiE6riI66OA7JWs6rO8IOyCrOyXheyCsOuejOygnOydhCDquIngsojtlZjroJjripQg7JWx7ZSEIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCIsInRoZW1lX2NvbG9yIjoiIzJjM2U1MCIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1Ua3lJaUJvWldsbmFIUTlJakU1TWlJZ2RtbGxkMEp2ZUQwaU1DQXdJREU1TWlBeE9USWlJR1pwYkd3OUltNXZibVVpSUhodGJHNXpQU0pvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh5TURBd0wzTjJaeUlQZ2c9PSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn0seyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUIzYVdSMGFEMGlOVEV5SWlCb1pXbG5hSFE5SWpVeE1pSWlJSFpwWlhkQ2IzZzlJakFnTUNBMU1USWdOVEV5SWlCbWFXeHNQU0p1YjI1bElpQjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaVBnPT0iLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .app-container { max-width: 100vw; min-height: 100vh; background: white; display: flex; flex-direction: column; }
+        .app-header { background: linear-gradient(45deg, #2c3e50, #34495e); color: white; padding: 20px; text-align: center; position: relative; }
+        .app-header h1 { font-size: 1.5em; margin-bottom: 5px; }
+        .app-header p { font-size: 0.9em; opacity: 0.8; }
+        .sync-status { position: absolute; top: 10px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 12px; }
+        .sync-indicator { width: 8px; height: 8px; border-radius: 50%; background: #27ae60; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .tab-bar { display: flex; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
+        .tab-btn { flex: 1; padding: 12px 8px; text-align: center; cursor: pointer; background: #f8f9fa; border: none; font-size: 11px; font-weight: 600; color: #495057; }
+        .tab-btn.active { background: white; color: #2c3e50; border-bottom: 3px solid #3498db; }
+        .content { flex: 1; padding: 15px; padding-bottom: 80px; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .summary-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 12px; border-radius: 12px; text-align: center; }
+        .summary-card h3 { font-size: 0.75em; margin-bottom: 8px; }
+        .summary-card .amount { font-size: 1.1em; font-weight: bold; }
+        .form-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e9ecef; }
+        .form-card h3 { color: #2c3e50; margin-bottom: 20px; font-size: 1.1em; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #2c3e50; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3498db; }
+        .btn { width: 100%; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; }
+        .table-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e9ecef; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { background: linear-gradient(45deg, #34495e, #2c3e50); color: white; padding: 10px 6px; text-align: left; font-size: 11px; }
+        td { padding: 8px 6px; border-bottom: 1px solid #e9ecef; font-size: 11px; }
+        .delete-btn { background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e9ecef; padding: 10px; }
+        .nav-btn { width: 100%; background: linear-gradient(45deg, #27ae60, #229954); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .empty-state { text-align: center; padding: 30px 20px; color: #6c757d; font-size: 14px; }
+        .stats-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
+        .stats-item:last-child { border-bottom: none; }
+        .stats-label { color: #6c757d; }
+        .stats-value { font-weight: 600; color: #2c3e50; }
+        .period-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .period-tab { flex: 1; padding: 10px; border: 2px solid #e9ecef; background: white; border-radius: 8px; cursor: pointer; text-align: center; font-size: 12px; }
+        .period-tab.active { border-color: #3498db; background: #3498db; color: white; }
+        .notification { position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 8px; color: white; font-weight: 600; z-index: 1000; transform: translateX(400px); transition: transform 0.3s ease; }
+        .notification.show { transform: translateX(0); }
+        .notification.success { background: #27ae60; }
+        .notification.error { background: #e74c3c; }
+        .notification.info { background: #3498db; }
+        @media (max-width: 768px) {
+            .tab-btn { font-size: 10px; padding: 10px 4px; }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); }
+            .period-tabs { flex-direction: column; }
+            .period-tab { margin-bottom: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-screen" class="app-container">
+        <div class="app-header">
+            <div class="sync-status">
+                <div class="sync-indicator"></div>
+                <span>테스트 모드</span>
+            </div>
+            <h1>💰 매출 관리</h1>
+            <p>현금매출과 사업자매출을 쉽게 관리하세요</p>
+        </div>
+        
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('cash', this)">현금매출</button>
+            <button class="tab-btn" onclick="switchTab('business', this)">사업자매출</button>
+            <button class="tab-btn" onclick="switchTab('expense', this)">지출관리</button>
+            <button class="tab-btn" onclick="switchTab('client', this)">거래처</button>
+            <button class="tab-btn" onclick="switchTab('stats', this)">통계</button>
+        </div>
+        
+        <div class="content">
+            <!-- 현금매출 화면 -->
+            <div id="cash-screen" class="screen active">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>현금매출 총계</h3>
+                        <div class="amount" id="cash-total">₩0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>현금매출 건수</h3>
+                        <div class="amount" id="cash-count">0건</div>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <h3>📝 현금매출 등록</h3>
+                    <div class="form-group">
+                        <label>날짜</label>
+                        <input type="date" id="cash-date">
+                    </div>
+                    <div class="form-group">
+                        <label>고객명</label>
+                        <input type="text" id="cash-customer" placeholder="고객명 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>상품/서비스</label>
+                        <input type="text" id="cash-product" placeholder="상품/서비스명">
+                    </div>
+                    <div class="form-group">
+                        <label>매출금액</label>
+                        <input type="number" id="cash-amount" placeholder="금액 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>매출 루트</label>
+                        <select id="cash-route">
+                            <option value="">매출 루트 선택</option>
+                            <option value="현장판매">현장판매</option>
+                            <option value="전화주문">전화주문</option>
+                            <option value="온라인">온라인</option>
+                            <option value="지인추천">지인추천</option>
+                            <option value="크몽">크몽</option>
+                            <option value="당근">당근</option>
+                            <option value="숨고">숨고</option>
+                            <option value="기타">기타</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>비고</label>
+                        <textarea id="cash-memo" placeholder="매출 루트에 대한 상세 정보"></textarea>
+                    </div>
+                    <button class="btn" onclick="addCashSale()">현금매출 추가</button>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>고객명</th>
+                                    <th>상품/서비스</th>
+                                    <th>금액</th>
+                                    <th>매출루트</th>
+                                    <th>비고</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cash-table">
+                                <tr><td colspan="7" class="empty-state">등록된 현금매출이 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 사업자매출 화면 -->
+            <div id="business-screen" class="screen">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>사업자매출 총계</h3>
+                        <div class="amount" id="business-total">₩0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>사업자매출 건수</h3>
+                        <div class="amount" id="business-count">0건</div>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <h3>🏢 사업자매출 등록</h3>
+                    <div class="form-group">
+                        <label>날짜</label>
+                        <input type="date" id="business-date">
+                    </div>
+                    <div class="form-group">
+                        <label>거래처 선택</label>
+                        <select id="business-client">
+                            <option value="">거래처를 선택하세요</option>
+                            <option value="smartstore">스마트스토어</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>상품/서비스</label>
+                        <input type="text" id="business-product" placeholder="상품/서비스명">
+                    </div>
+                    <div class="form-group">
+                        <label>매출금액 (부가세 포함)</label>
+                        <input type="number" id="business-amount" placeholder="금액 입력" oninput="calculateTax()">
+                    </div>
+                    <div class="form-group">
+                        <label>부가세</label>
+                        <input type="number" id="business-tax" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>비고</label>
+                        <textarea id="business-memo" placeholder="추가 정보"></textarea>
+                    </div>
+                    <button class="btn" onclick="addBusinessSale()">사업자매출 추가</button>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>거래처명</th>
+                                    <th>상품/서비스</th>
+                                    <th>공급가액</th>
+                                    <th>부가세</th>
+                                    <th>총금액</th>
+                                    <th>비고</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="business-table">
+                                <tr><td colspan="8" class="empty-state">등록된 사업자매출이 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 지출 관리 화면 -->
+            <div id="expense-screen" class="screen">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>총 지출액</h3>
+                        <div class="amount" id="expense-total">₩0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>지출 건수</h3>
+                        <div class="amount" id="expense-count">0건</div>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <h3>💸 지출 등록</h3>
+                    <div class="form-group">
+                        <label>날짜</label>
+                        <input type="date" id="expense-date">
+                    </div>
+                    <div class="form-group">
+                        <label>지출 구분</label>
+                        <select id="expense-type" onchange="updateExpenseCategory()">
+                            <option value="">지출 구분 선택</option>
+                            <option value="고정지출">고정지출</option>
+                            <option value="일반지출">일반지출</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="expense-category-group" style="display: none;">
+                        <label>지출 카테고리</label>
+                        <select id="expense-category">
+                            <option value="">카테고리 선택</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>지출 내역</label>
+                        <input type="text" id="expense-description" placeholder="지출 내역 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>지출 금액</label>
+                        <input type="number" id="expense-amount" placeholder="금액 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>비고</label>
+                        <textarea id="expense-memo" placeholder="추가 정보"></textarea>
+                    </div>
+                    <button class="btn" onclick="addExpense()">지출 추가</button>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>구분</th>
+                                    <th>카테고리</th>
+                                    <th>지출내역</th>
+                                    <th>금액</th>
+                                    <th>비고</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expense-table">
+                                <tr><td colspan="7" class="empty-state">등록된 지출이 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 거래처 관리 화면 -->
+            <div id="client-screen" class="screen">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>등록된 거래처</h3>
+                        <div class="amount" id="client-total">0개</div>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <h3>🏢 거래처 등록</h3>
+                    <div class="form-group">
+                        <label>회사명 (상호)</label>
+                        <input type="text" id="client-company" placeholder="회사명 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>사업자등록번호</label>
+                        <input type="text" id="client-business-number" placeholder="123-45-67890">
+                    </div>
+                    <div class="form-group">
+                        <label>대표자명</label>
+                        <input type="text" id="client-ceo" placeholder="대표자 이름">
+                    </div>
+                    <div class="form-group">
+                        <label>연락처</label>
+                        <input type="tel" id="client-phone" placeholder="010-1234-5678">
+                    </div>
+                    <div class="form-group">
+                        <label>비고</label>
+                        <textarea id="client-memo" placeholder="거래처 관련 메모"></textarea>
+                    </div>
+                    <button class="btn" onclick="addClient()">거래처 등록</button>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>회사명</th>
+                                    <th>사업자번호</th>
+                                    <th>대표자</th>
+                                    <th>연락처</th>
+                                    <th>등록일</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="client-table">
+                                <tr><td colspan="6" class="empty-state">등록된 거래처가 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 통계 화면 -->
+            <div id="stats-screen" class="screen">
+                <div class="period-tabs">
+                    <button class="period-tab active" onclick="setPeriod('current', this)">이번 달</button>
+                    <button class="period-tab" onclick="setPeriod('compare', this)">전월 비교</button>
+                    <button class="period-tab" onclick="setPeriod('yearly', this)">전년 비교</button>
+                </div>
+                
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>총 매출액</h3>
+                        <div class="amount" id="total-sales">₩0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>총 지출액</h3>
+                        <div class="amount" id="total-expenses">₩0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>순이익</h3>
+                        <div class="amount" id="net-profit">₩0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>총 거래 건수</h3>
+                        <div class="amount" id="total-count">0건</div>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <h3>📊 매출 루트별 현황</h3>
+                    <div id="route-stats">데이터를 등록하면 표시됩니다</div>
+                </div>
+                
+                <div class="form-card">
+                    <h3>💸 지출 카테고리별 현황</h3>
+                    <div id="expense-stats">데이터를 등록하면 표시됩니다</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-nav">
+            <button class="nav-btn" onclick="downloadExcel()">📊 엑셀 다운로드</button>
+        </div>
+    </div>
+    
+    <!-- 알림 메시지 -->
+    <div id="notification" class="notification"></div>
+    
+    <script>
+        // 전역 변수
+        let cashSales = [];
+        let businessSales = [];
+        let clients = [];
+        let expenses = [];
+        let currentStatsMode = 'current';
+        
+        // 초기화 함수
+        function init() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('cash-date').value = today;
+            document.getElementById('business-date').value = today;
+            document.getElementById('expense-date').value = today;
+            
+            updateSummaries();
+            updateClientSelect();
+        }
+        
+        // 알림 표시
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 탭 전환 함수
+        function switchTab(tab, buttonElement) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const screens = document.querySelectorAll('.screen');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            screens.forEach(s => s.classList.remove('active'));
+            
+            buttonElement.classList.add('active');
+            document.getElementById(tab + '-screen').classList.add('active');
+            
+            if (tab === 'stats') {
+                updateStats();
+            }
+        }
+        
+        // 부가세 자동 계산
+        function calculateTax() {
+            const total = parseInt(document.getElementById('business-amount').value) || 0;
+            const tax = Math.round(total / 11);
+            document.getElementById('business-tax').value = tax;
+        }
+        
+        // 지출 카테고리 업데이트
+        function updateExpenseCategory() {
+            const type = document.getElementById('expense-type').value;
+            const categoryGroup = document.getElementById('expense-category-group');
+            const categorySelect = document.getElementById('expense-category');
+            
+            if (type === '일반지출') {
+                categoryGroup.style.display = 'block';
+                categorySelect.innerHTML = '<option value="">카테고리 선택</option>' +
+                    '<option value="식대">식대</option>' +
+                    '<option value="유류비">유류비</option>' +
+                    '<option value="공과금">공과금</option>' +
+                    '<option value="잡지출">잡지출</option>';
+            } else if (type === '고정지출') {
+                categoryGroup.style.display = 'block';
+                categorySelect.innerHTML = '<option value="고정지출">고정지출</option>';
+                categorySelect.value = '고정지출';
+            } else {
+                categoryGroup.style.display = 'none';
+            }
+        }
+        
+        // 현금매출 추가
+        function addCashSale() {
+            const date = document.getElementById('cash-date').value;
+            const customer = document.getElementById('cash-customer').value;
+            const product = document.getElementById('cash-product').value;
+            const amount = parseInt(document.getElementById('cash-amount').value) || 0;
+            const route = document.getElementById('cash-route').value;
+            const memo = document.getElementById('cash-memo').value;
+            
+            if (!date || !product || !amount || !route) {
+                showNotification('필수 항목을 모두 입력해주세요.', 'error');
+                return;
+            }
+            
+            cashSales.push({
+                id: Date.now(),
+                date: date,
+                customer: customer,
+                product: product,
+                amount: amount,
+                route: route,
+                memo: memo
+            });
+            
+            renderCashTable();
+            updateSummaries();
+            clearCashForm();
+            showNotification('현금매출이 추가되었습니다.', 'success');
+        }
+        
+        // 사업자매출 추가
+        function addBusinessSale() {
+            const date = document.getElementById('business-date').value;
+            const clientId = document.getElementById('business-client').value;
+            const product = document.getElementById('business-product').value;
+            const amount = parseInt(document.getElementById('business-amount').value) || 0;
+            const tax = parseInt(document.getElementById('business-tax').value) || 0;
+            const memo = document.getElementById('business-memo').value;
+            
+            if (!date || !clientId || !product || !amount) {
+                showNotification('필수 항목을 모두 입력해주세요.', 'error');
+                return;
+            }
+            
+            let client = null;
+            if (clientId === 'smartstore') {
+                client = {
+                    id: 'smartstore',
+                    company: '네이버 스마트스토어',
+                    ceo: '네이버',
+                    businessNumber: '-'
+                };
+            } else {
+                client = clients.find(c => c.id == clientId);
+            }
+            
+            if (!client) {
+                showNotification('선택된 거래처 정보를 찾을 수 없습니다.', 'error');
+                return;
+            }
+            
+            businessSales.push({
+                id: Date.now(),
+                date: date,
+                clientId: clientId,
+                client: client,
+                product: product,
+                amount: amount,
+                tax: tax,
+                supplyAmount: amount - tax,
+                memo: memo
+            });
+            
+            renderBusinessTable();
+            updateSummaries();
+            clearBusinessForm();
+            showNotification('사업자매출이 추가되었습니다.', 'success');
+        }
+        
+        // 지출 추가
+        function addExpense() {
+            const date = document.getElementById('expense-date').value;
+            const type = document.getElementById('expense-type').value;
+            const category = document.getElementById('expense-category').value;
+            const description = document.getElementById('expense-description').value;
+            const amount = parseInt(document.getElementById('expense-amount').value) || 0;
+            const memo = document.getElementById('expense-memo').value;
+            
+            if (!date || !type || !category || !description || !amount) {
+                showNotification('필수 항목을 모두 입력해주세요.', 'error');
+                return;
+            }
+            
+            expenses.push({
+                id: Date.now(),
+                date: date,
+                type: type,
+                category: category,
+                description: description,
+                amount: amount,
+                memo: memo
+            });
+            
+            renderExpenseTable();
+            updateSummaries();
+            clearExpenseForm();
+            showNotification('지출이 추가되었습니다.', 'success');
+        }
+        
+        // 거래처 추가
+        function addClient() {
+            const company = document.getElementById('client-company').value;
+            const businessNumber = document.getElementById('client-business-number').value;
+            const ceo = document.getElementById('client-ceo').value;
+            const phone = document.getElementById('client-phone').value;
+            const memo = document.getElementById('client-memo').value;
+            
+            if (!company || !businessNumber || !ceo) {
+                showNotification('회사명, 사업자등록번호, 대표자명은 필수 입력 항목입니다.', 'error');
+                return;
+            }
+            
+            clients.push({
+                id: Date.now(),
+                company: company,
+                businessNumber: businessNumber,
+                ceo: ceo,
+                phone: phone,
+                memo: memo,
+                registeredDate: new Date().toISOString().split('T')[0]
+            });
+            
+            renderClientTable();
+            updateClientSelect();
+            updateSummaries();
+            clearClientForm();
+            showNotification('거래처가 등록되었습니다.', 'success');
+        }
+        
+        // 테이블 렌더링 함수들
+        function renderCashTable() {
+            const tbody = document.getElementById('cash-table');
+            if (cashSales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 현금매출이 없습니다</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            cashSales.forEach(sale => {
+                html += `<tr>
+                    <td>${sale.date}</td>
+                    <td>${sale.customer || '-'}</td>
+                    <td>${sale.product}</td>
+                    <td>₩${sale.amount.toLocaleString()}</td>
+                    <td>${sale.route}</td>
+                    <td>${sale.memo || '-'}</td>
+                    <td><button class="delete-btn" onclick="deleteCash(${sale.id})">삭제</button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        function renderBusinessTable() {
+            const tbody = document.getElementById('business-table');
+            if (businessSales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 사업자매출이 없습니다</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            businessSales.forEach(sale => {
+                html += `<tr>
+                    <td>${sale.date}</td>
+                    <td>${sale.client.company}</td>
+                    <td>${sale.product}</td>
+                    <td>₩${sale.supplyAmount.toLocaleString()}</td>
+                    <td>₩${sale.tax.toLocaleString()}</td>
+                    <td>₩${sale.amount.toLocaleString()}</td>
+                    <td>${sale.memo || '-'}</td>
+                    <td><button class="delete-btn" onclick="deleteBusiness(${sale.id})">삭제</button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        function renderExpenseTable() {
+            const tbody = document.getElementById('expense-table');
+            if (expenses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 지출이 없습니다</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            expenses.forEach(expense => {
+                html += `<tr>
+                    <td>${expense.date}</td>
+                    <td>${expense.type}</td>
+                    <td>${expense.category}</td>
+                    <td>${expense.description}</td>
+                    <td>₩${expense.amount.toLocaleString()}</td>
+                    <td>${expense.memo || '-'}</td>
+                    <td><button class="delete-btn" onclick="deleteExpense(${expense.id})">삭제</button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        function renderClientTable() {
+            const tbody = document.getElementById('client-table');
+            if (clients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 거래처가 없습니다</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            clients.forEach(client => {
+                html += `<tr>
+                    <td>${client.company}</td>
+                    <td>${client.businessNumber}</td>
+                    <td>${client.ceo}</td>
+                    <td>${client.phone || '-'}</td>
+                    <td>${client.registeredDate}</td>
+                    <td><button class="delete-btn" onclick="deleteClient(${client.id})">삭제</button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        // 거래처 선택 드롭다운 업데이트
+        function updateClientSelect() {
+            const select = document.getElementById('business-client');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">거래처를 선택하세요</option>';
+            select.innerHTML += '<option value="smartstore">스마트스토어</option>';
+            
+            clients.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.id;
+                option.textContent = `${client.company} (${client.ceo})`;
+                select.appendChild(option);
+            });
+        }
+        
+        // 요약 정보 업데이트
+        function updateSummaries() {
+            // 현금매출 요약
+            const cashTotal = cashSales.reduce((sum, sale) => sum + sale.amount, 0);
+            document.getElementById('cash-total').textContent = '₩' + cashTotal.toLocaleString();
+            document.getElementById('cash-count').textContent = cashSales.length + '건';
+            
+            // 사업자매출 요약
+            const businessTotal = businessSales.reduce((sum, sale) => sum + sale.amount, 0);
+            document.getElementById('business-total').textContent = '₩' + businessTotal.toLocaleString();
+            document.getElementById('business-count').textContent = businessSales.length + '건';
+            
+            // 지출 요약
+            const expenseTotal = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            document.getElementById('expense-total').textContent = '₩' + expenseTotal.toLocaleString();
+            document.getElementById('expense-count').textContent = expenses.length + '건';
+            
+            // 거래처 요약
+            document.getElementById('client-total').textContent = clients.length + '개';
+            
+            // 통계 화면 요약
+            const totalSales = cashTotal + businessTotal;
+            const totalCount = cashSales.length + businessSales.length;
+            const netProfit = totalSales - expenseTotal;
+            
+            document.getElementById('total-sales').textContent = '₩' + totalSales.toLocaleString();
+            document.getElementById('total-expenses').textContent = '₩' + expenseTotal.toLocaleString();
+            document.getElementById('net-profit').textContent = '₩' + netProfit.toLocaleString();
+            document.getElementById('total-count').textContent = totalCount + '건';
+        }
+        
+        // 삭제 함수들
+        function deleteCash(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            
+            cashSales = cashSales.filter(sale => sale.id !== id);
+            renderCashTable();
+            updateSummaries();
+            showNotification('현금매출이 삭제되었습니다.', 'success');
+        }
+        
+        function deleteBusiness(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            
+            businessSales = businessSales.filter(sale => sale.id !== id);
+            renderBusinessTable();
+            updateSummaries();
+            showNotification('사업자매출이 삭제되었습니다.', 'success');
+        }
+        
+        function deleteExpense(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            
+            expenses = expenses.filter(expense => expense.id !== id);
+            renderExpenseTable();
+            updateSummaries();
+            showNotification('지출이 삭제되었습니다.', 'success');
+        }
+        
+        function deleteClient(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            
+            clients = clients.filter(client => client.id !== id);
+            renderClientTable();
+            updateClientSelect();
+            updateSummaries();
+            showNotification('거래처가 삭제되었습니다.', 'success');
+        }
+        
+        // 폼 초기화 함수들
+        function clearCashForm() {
+            document.getElementById('cash-customer').value = '';
+            document.getElementById('cash-product').value = '';
+            document.getElementById('cash-amount').value = '';
+            document.getElementById('cash-route').value = '';
+            document.getElementById('cash-memo').value = '';
+        }
+        
+        function clearBusinessForm() {
+            document.getElementById('business-client').value = '';
+            document.getElementById('business-product').value = '';
+            document.getElementById('business-amount').value = '';
+            document.getElementById('business-tax').value = '';
+            document.getElementById('business-memo').value = '';
+        }
+        
+        function clearExpenseForm() {
+            document.getElementById('expense-type').value = '';
+            document.getElementById('expense-category').value = '';
+            document.getElementById('expense-description').value = '';
+            document.getElementById('expense-amount').value = '';
+            document.getElementById('expense-memo').value = '';
+            document.getElementById('expense-category-group').style.display = 'none';
+        }
+        
+        function clearClientForm() {
+            document.getElementById('client-company').value = '';
+            document.getElementById('client-business-number').value = '';
+            document.getElementById('client-ceo').value = '';
+            document.getElementById('client-phone').value = '';
+            document.getElementById('client-memo').value = '';
+        }
+        
+        // 통계 기간 설정
+        function setPeriod(mode, buttonElement) {
+            currentStatsMode = mode;
+            const tabs = document.querySelectorAll('.period-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttonElement.classList.add('active');
+            updateStats();
+        }
+        
+        // 통계 업데이트
+        function updateStats() {
+            // 매출 루트별 통계
+            const routeStats = {};
+            cashSales.forEach(sale => {
+                const route = sale.route;
+                routeStats[route] = (routeStats[route] || 0) + sale.amount;
+            });
+            
+            let routeHtml = '';
+            if (Object.keys(routeStats).length === 0) {
+                routeHtml = '<div class="stats-item"><span class="stats-label">데이터 없음</span><span class="stats-value">-</span></div>';
+            } else {
+                Object.entries(routeStats).forEach(([route, amount]) => {
+                    routeHtml += `<div class="stats-item">
+                        <span class="stats-label">${route}</span>
+                        <span class="stats-value">₩${amount.toLocaleString()}</span>
+                    </div>`;
+                });
+            }
+            document.getElementById('route-stats').innerHTML = routeHtml;
+            
+            // 지출 카테고리별 통계
+            const expenseStats = {};
+            expenses.forEach(expense => {
+                const category = expense.category;
+                expenseStats[category] = (expenseStats[category] || 0) + expense.amount;
+            });
+            
+            let expenseHtml = '';
+            if (Object.keys(expenseStats).length === 0) {
+                expenseHtml = '<div class="stats-item"><span class="stats-label">데이터 없음</span><span class="stats-value">-</span></div>';
+            } else {
+                Object.entries(expenseStats).forEach(([category, amount]) => {
+                    expenseHtml += `<div class="stats-item">
+                        <span class="stats-label">${category}</span>
+                        <span class="stats-value">₩${amount.toLocaleString()}</span>
+                    </div>`;
+                });
+            }
+            document.getElementById('expense-stats').innerHTML = expenseHtml;
+        }
+        
+        // 엑셀 다운로드
+        function downloadExcel() {
+            try {
+                const wb = XLSX.utils.book_new();
+                
+                // 현금매출 시트
+                const cashHeaders = ['날짜', '고객명', '상품/서비스', '매출금액', '매출루트', '비고'];
+                const cashData = [cashHeaders];
+                
+                cashSales.forEach(sale => {
+                    cashData.push([
+                        sale.date,
+                        sale.customer || '',
+                        sale.product,
+                        sale.amount,
+                        sale.route,
+                        sale.memo || ''
+                    ]);
+                });
+                
+                const cashWs = XLSX.utils.aoa_to_sheet(cashData);
+                XLSX.utils.book_append_sheet(wb, cashWs, '현금매출');
+                
+                // 사업자매출 시트
+                const businessHeaders = ['날짜', '거래처명', '상품/서비스', '공급가액', '부가세', '총금액', '비고'];
+                const businessData = [businessHeaders];
+                
+                businessSales.forEach(sale => {
+                    businessData.push([
+                        sale.date,
+                        sale.client.company,
+                        sale.product,
+                        sale.supplyAmount,
+                        sale.tax,
+                        sale.amount,
+                        sale.memo || ''
+                    ]);
+                });
+                
+                const businessWs = XLSX.utils.aoa_to_sheet(businessData);
+                XLSX.utils.book_append_sheet(wb, businessWs, '사업자매출');
+                
+                // 지출 시트
+                const expenseHeaders = ['날짜', '지출구분', '카테고리', '지출내역', '금액', '비고'];
+                const expenseData = [expenseHeaders];
+                
+                expenses.forEach(expense => {
+                    expenseData.push([
+                        expense.date,
+                        expense.type,
+                        expense.category,
+                        expense.description,
+                        expense.amount,
+                        expense.memo || ''
+                    ]);
+                });
+                
+                const expenseWs = XLSX.utils.aoa_to_sheet(expenseData);
+                XLSX.utils.book_append_sheet(wb, expenseWs, '지출관리');
+                
+                // 거래처 시트
+                const clientHeaders = ['회사명', '사업자번호', '대표자', '연락처', '등록일', '비고'];
+                const clientData = [clientHeaders];
+                
+                clients.forEach(client => {
+                    clientData.push([
+                        client.company,
+                        client.businessNumber,
+                        client.ceo,
+                        client.phone || '',
+                        client.registeredDate,
+                        client.memo || ''
+                    ]);
+                });
+                
+                const clientWs = XLSX.utils.aoa_to_sheet(clientData);
+                XLSX.utils.book_append_sheet(wb, clientWs, '거래처목록');
+                
+                // 파일 다운로드
+                const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+                XLSX.writeFile(wb, `매출관리_${today}.xlsx`);
+                
+                showNotification('엑셀 파일이 다운로드되었습니다!', 'success');
+            } catch (error) {
+                console.error('엑셀 다운로드 오류:', error);
+                showNotification('다운로드 중 오류가 발생했습니다.', 'error');
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
