@@ -1,0 +1,26 @@
+{
+  "name": "매출 관리 앱",
+  "short_name": "매출관리",
+  "description": "현금매출과 사업자매출을 쉽게 관리하는 PWA 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2c3e50",
+  "theme_color": "#2c3e50",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"],
+  "lang": "ko"
+}
