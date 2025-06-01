@@ -1,11 +1,10 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-firestore.min.js"></script>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#2c3e50">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="매출관리">
@@ -13,12 +12,15 @@
     <title>매출 관리 앱</title>
     
     <!-- 완벽한 앱 아이콘들 -->
-    <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHJ4PSI0OCIgZmlsbD0iIzJjM2U1MCIvPjxjaXJjbGUgY3g9Ijk2IiBjeT0iNzAiIHI9IjI0IiBmaWxsPSIjZmZkNzAwIi8+PHJlY3QgeD0iNDAiIHk9IjEyMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iODEiIHk9IjEyMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTIyIiB5PSIxMjAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
-    
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI0MCIgZmlsbD0iIzJjM2U1MCIvPjxjaXJjbGUgY3g9IjkwIiBjeT0iNjUiIHI9IjIwIiBmaWxsPSIjZmZkNzAwIi8+PHJlY3QgeD0iMzUiIHk9IjExMCIgd2lkdGg9IjI1IiBoZWlnaHQ9IjM1IiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iNzAiIHk9IjExMCIgd2lkdGg9IjI1IiBoZWlnaHQ9IjM1IiBmaWxsPSIjZmZmIi8+PHJlY3QgeD0iMTA1IiB5PSIxMTAiIHdpZHRoPSIyNSIgaGVpZ2h0PSIzNSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="/icon-180.png">
     
     <!-- PWA 매니페스트 -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi66mA7LacIOq0gOumrCDslYHtlIQiLCJzaG9ydF9uYW1lIjoi66mA7LacIOq0gOumrCIsImRlc2NyaXB0aW9uIjoi7ZiE6riI66OA7JWs6rO8IOyCrOyXheyCsOuejOygnOydhCDquIngsojtlZjroJjripQg7JWx7ZSEIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCIsInRoZW1lX2NvbG9yIjoiIzJjM2U1MCIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1Ua3lJaUJvWldsbmFIUTlJakU1TWlJZ2RtbGxkMEp2ZUQwaU1DQXdJREU1TWlBeE9USWlJR1pwYkd3OUltNXZibVVpSUhodGJHNXpQU0pvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh5TURBd0wzTjJaeUlQZ2c9PSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn0seyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUIzYVdSMGFEMGlOVEV5SWlCb1pXbG5hSFE5SWpVeE1pSWlJSFpwWlhkQ2IzZzlJakFnTUNBMU1USWdOVEV5SWlCbWFXeHNQU0p1YjI1bElpQjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaVBnPT0iLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Firebase Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-firestore.min.js"></script>
     
     <!-- SheetJS for Excel export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -416,6 +418,21 @@
     <div id="notification" class="notification"></div>
     
     <script>
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBQ0zie0IIlTayV8LSFwKzPeQcmecfva8",
+            authDomain: "sales-management-app-b78e6.firebaseapp.com",
+            projectId: "sales-management-app-b78e6",
+            storageBucket: "sales-management-app-b78e6.firebasestorage.app",
+            messagingSenderId: "157758583403",
+            appId: "1:157758583403:web:ccf13a0881028beba5244e",
+            measurementId: "G-FDY3H4RJF5"
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
         // 전역 변수
         let cashSales = [];
         let businessSales = [];
@@ -424,45 +441,45 @@
         let currentStatsMode = 'current';
         
         // 초기화 함수
-function init() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('cash-date').value = today;
-    document.getElementById('business-date').value = today;
-    document.getElementById('expense-date').value = today;
-    
-    // Firebase에서 데이터 불러오기
-    loadFirebaseData();
-    updateClientSelect();
-}
+        function init() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('cash-date').value = today;
+            document.getElementById('business-date').value = today;
+            document.getElementById('expense-date').value = today;
+            
+            // Firebase에서 데이터 불러오기
+            loadFirebaseData();
+            updateClientSelect();
+        }
 
-// Firebase 데이터 불러오기
-function loadFirebaseData() {
-    // 현금매출 불러오기
-    db.collection("cashSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        cashSales = [];
-        snapshot.forEach((doc) => {
-            cashSales.push({
-                id: doc.data().id || doc.id,
-                ...doc.data()
+        // Firebase 데이터 불러오기
+        function loadFirebaseData() {
+            // 현금매출 불러오기
+            db.collection("cashSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                cashSales = [];
+                snapshot.forEach((doc) => {
+                    cashSales.push({
+                        id: doc.data().id || doc.id,
+                        ...doc.data()
+                    });
+                });
+                renderCashTable();
+                updateSummaries();
             });
-        });
-        renderCashTable();
-        updateSummaries();
-    });
-    
-    // 사업자매출 불러오기
-    db.collection("businessSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        businessSales = [];
-        snapshot.forEach((doc) => {
-            businessSales.push({
-                id: doc.data().id || doc.id,
-                ...doc.data()
+            
+            // 사업자매출 불러오기
+            db.collection("businessSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                businessSales = [];
+                snapshot.forEach((doc) => {
+                    businessSales.push({
+                        id: doc.data().id || doc.id,
+                        ...doc.data()
+                    });
+                });
+                renderBusinessTable();
+                updateSummaries();
             });
-        });
-        renderBusinessTable();
-        updateSummaries();
-    });
-}
+        }
         
         // 알림 표시
         function showNotification(message, type = 'info') {
@@ -535,29 +552,21 @@ function loadFirebaseData() {
                 return;
             }
             
-            cashSales.push({
-                id: Date.now(),
+            db.collection("cashSales").add({
                 date: date,
                 customer: customer,
                 product: product,
                 amount: amount,
                 route: route,
-                memo: memo
+                memo: memo,
+                timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
+            }).then(() => {
+                clearCashForm();
+                showNotification('현금매출이 추가되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('현금매출 추가 오류:', error);
+                showNotification('매출 추가에 실패했습니다.', 'error');
             });
-            db.collection("cashSales").add({
-    date: date,
-    customer: customer,
-    product: product,
-    amount: amount,
-    route: route,
-    memo: memo,
-    timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
-});
-            
-            renderCashTable();
-            updateSummaries();
-            clearCashForm();
-            showNotification('현금매출이 추가되었습니다.', 'success');
         }
         
         // 사업자매출 추가
@@ -578,27 +587,26 @@ function loadFirebaseData() {
             if (clientId === 'smartstore') {
                 client = {
                     id: 'smartstore',
-                    company: '네이버 ',
+                    company: '네이버 스마트스토어',
                     ceo: '네이버',
                     businessNumber: '-'
                 };
-                } else if (clientId === '카드매출') {
-    client = {
-        id: '카드매출',
-        company: '카드매출',
-        ceo: '-',
-        businessNumber: '-'
-    };
-} else if (clientId === '도급') {
-    client = {
-        id: '도급',
-        company: '도급',
-        ceo: '-',
-        businessNumber: '-'
-    };
-} else {
-    client = clients.find(c => c.id == clientId);
-}
+            } else if (clientId === '카드매출') {
+                client = {
+                    id: '카드매출',
+                    company: '카드매출',
+                    ceo: '-',
+                    businessNumber: '-'
+                };
+            } else if (clientId === '도급') {
+                client = {
+                    id: '도급',
+                    company: '도급',
+                    ceo: '-',
+                    businessNumber: '-'
+                };
+            } else {
+                client = clients.find(c => c.id == clientId);
             }
             
             if (!client) {
@@ -606,8 +614,7 @@ function loadFirebaseData() {
                 return;
             }
             
-            businessSales.push({
-                id: Date.now(),
+            db.collection("businessSales").add({
                 date: date,
                 clientId: clientId,
                 client: client,
@@ -615,13 +622,15 @@ function loadFirebaseData() {
                 amount: amount,
                 tax: tax,
                 supplyAmount: amount - tax,
-                memo: memo
+                memo: memo,
+                timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
+            }).then(() => {
+                clearBusinessForm();
+                showNotification('사업자매출이 추가되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('사업자매출 추가 오류:', error);
+                showNotification('매출 추가에 실패했습니다.', 'error');
             });
-            
-            renderBusinessTable();
-            updateSummaries();
-            clearBusinessForm();
-            showNotification('사업자매출이 추가되었습니다.', 'success');
         }
         
         // 지출 추가
@@ -701,7 +710,7 @@ function loadFirebaseData() {
                     <td>₩${sale.amount.toLocaleString()}</td>
                     <td>${sale.route}</td>
                     <td>${sale.memo || '-'}</td>
-                    <td><button class="delete-btn" onclick="deleteCash(${sale.id})">삭제</button></td>
+                    <td><button class="delete-btn" onclick="deleteCash('${sale.id}')">삭제</button></td>
                 </tr>`;
             });
             tbody.innerHTML = html;
@@ -724,7 +733,7 @@ function loadFirebaseData() {
                     <td>₩${sale.tax.toLocaleString()}</td>
                     <td>₩${sale.amount.toLocaleString()}</td>
                     <td>${sale.memo || '-'}</td>
-                    <td><button class="delete-btn" onclick="deleteBusiness(${sale.id})">삭제</button></td>
+                    <td><button class="delete-btn" onclick="deleteBusiness('${sale.id}')">삭제</button></td>
                 </tr>`;
             });
             tbody.innerHTML = html;
@@ -781,7 +790,7 @@ function loadFirebaseData() {
             select.innerHTML = '<option value="">거래처를 선택하세요</option>';
             select.innerHTML += '<option value="smartstore">스마트스토어</option>';
             select.innerHTML += '<option value="도급">도급</option>';
-select.innerHTML += '<option value="카드매출">카드매출</option>';
+            select.innerHTML += '<option value="카드매출">카드매출</option>';
             
             clients.forEach(client => {
                 const option = document.createElement('option');
@@ -826,19 +835,23 @@ select.innerHTML += '<option value="카드매출">카드매출</option>';
         function deleteCash(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
-            cashSales = cashSales.filter(sale => sale.id !== id);
-            renderCashTable();
-            updateSummaries();
-            showNotification('현금매출이 삭제되었습니다.', 'success');
+            db.collection("cashSales").doc(id).delete().then(() => {
+                showNotification('현금매출이 삭제되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('삭제 오류:', error);
+                showNotification('삭제에 실패했습니다.', 'error');
+            });
         }
         
         function deleteBusiness(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
-            businessSales = businessSales.filter(sale => sale.id !== id);
-            renderBusinessTable();
-            updateSummaries();
-            showNotification('사업자매출이 삭제되었습니다.', 'success');
+            db.collection("businessSales").doc(id).delete().then(() => {
+                showNotification('사업자매출이 삭제되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('삭제 오류:', error);
+                showNotification('삭제에 실패했습니다.', 'error');
+            });
         }
         
         function deleteExpense(id) {
@@ -1039,73 +1052,4 @@ select.innerHTML += '<option value="카드매출">카드매출</option>';
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCBQ0zie0IIlTayV8LSFwKzPeQcmecfva8",
-authDomain: "sales-management-app-b78e6.firebaseapp.com",
-projectId: "sales-management-app-b78e6",
-storageBucket: "sales-management-app-b78e6.firebasestorage.app",
-messagingSenderId: "157758483403",
-appId: "1:157758583403:web:ccf13a0881028beba5244e",
-measurementId: "G-FDY3H4RJF5"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-// Firebase 동기화 기능 추가
-let salesData = []; // 전역 변수로 변경
-
-// Firestore에서 데이터 실시간 동기화
-function setupFirebaseSync() {
-    db.collection("sales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        salesData = [];
-        snapshot.forEach((doc) => {
-            salesData.push({
-                id: doc.id,
-                ...doc.data()
-            });
-        });
-        updateSalesTable();
-        updateTotalSales();
-    });
-}
-
-// 매출 추가 (Firestore에 저장)
-function addSale(date, customer, amount, description) {
-    // Firebase에 저장
-    addSaleToFirebase(date, customer, amount, description);
-}
-function addSaleToFirebase(date, customer, amount, description) {
-    db.collection("sales").add({
-        date: date,
-        customer: customer,
-        amount: parseInt(amount),
-        description: description,
-        timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
-    }).then(() => {
-        console.log("매출이 성공적으로 저장되었습니다!");
-    }).catch((error) => {
-        console.error("매출 저장 오류:", error);
-        alert("매출 저장에 실패했습니다.");
-    });
-}
-
-// 매출 삭제 (Firestore에서 삭제)
-function deleteSaleFromFirebase(saleId) {
-    db.collection("sales").doc(saleId).delete().then(() => {
-        console.log("매출이 성공적으로 삭제되었습니다!");
-    }).catch((error) => {
-        console.error("매출 삭제 오류:", error);
-        alert("매출 삭제에 실패했습니다.");
-    });
-}
-
-// 페이지 로드 시 Firebase 동기화 시작
-document.addEventListener('DOMContentLoaded', function() {
-    // 기존 init() 함수 대신 Firebase 동기화 사용
-    setupFirebaseSync();
-});
 </html>
