@@ -552,6 +552,20 @@
                     ceo: '네이버',
                     businessNumber: '-'
                 };
+                } else if (clientId === '카드매출') {
+    client = {
+        id: '카드매출',
+        company: '카드매출',
+        ceo: '-',
+        businessNumber: '-'
+    };
+} else if (clientId === '도급') {
+    client = {
+        id: '도급',
+        company: '도급',
+        ceo: '-',
+        businessNumber: '-'
+    };
             } else {
                 client = clients.find(c => c.id == clientId);
             }
