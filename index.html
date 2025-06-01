@@ -539,7 +539,7 @@
             if (clientId === 'smartstore') {
                 client = {
                     id: 'smartstore',
-                    company: '네이버 스마트스토어',
+                    company: '네이버 ',
                     ceo: '네이버',
                     businessNumber: '-'
                 };
@@ -726,6 +726,8 @@
             
             select.innerHTML = '<option value="">거래처를 선택하세요</option>';
             select.innerHTML += '<option value="smartstore">스마트스토어</option>';
+            select.innerHTML += '<option value="도급">도급</option>';
+select.innerHTML += '<option value="카드매출">카드매출</option>';
             
             clients.forEach(client => {
                 const option = document.createElement('option');
