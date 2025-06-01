@@ -1024,6 +1024,20 @@ function addSale(date, customer, amount, description) {
     // Firebase에 저장
     addSaleToFirebase(date, customer, amount, description);
 }
+function addSaleToFirebase(date, customer, amount, description) {
+    db.collection("sales").add({
+        date: date,
+        customer: customer,
+        amount: parseInt(amount),
+        description: description,
+        timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
+    }).then(() => {
+        console.log("매출이 성공적으로 저장되었습니다!");
+    }).catch((error) => {
+        console.error("매출 저장 오류:", error);
+        alert("매출 저장에 실패했습니다.");
+    });
+}
 
 // 매출 삭제 (Firestore에서 삭제)
 function deleteSaleFromFirebase(saleId) {
