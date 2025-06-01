@@ -424,15 +424,45 @@
         let currentStatsMode = 'current';
         
         // 초기화 함수
-        function init() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('cash-date').value = today;
-            document.getElementById('business-date').value = today;
-            document.getElementById('expense-date').value = today;
-            
-            updateSummaries();
-            updateClientSelect();
-        }
+function init() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('cash-date').value = today;
+    document.getElementById('business-date').value = today;
+    document.getElementById('expense-date').value = today;
+    
+    // Firebase에서 데이터 불러오기
+    loadFirebaseData();
+    updateClientSelect();
+}
+
+// Firebase 데이터 불러오기
+function loadFirebaseData() {
+    // 현금매출 불러오기
+    db.collection("cashSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        cashSales = [];
+        snapshot.forEach((doc) => {
+            cashSales.push({
+                id: doc.data().id || doc.id,
+                ...doc.data()
+            });
+        });
+        renderCashTable();
+        updateSummaries();
+    });
+    
+    // 사업자매출 불러오기
+    db.collection("businessSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        businessSales = [];
+        snapshot.forEach((doc) => {
+            businessSales.push({
+                id: doc.data().id || doc.id,
+                ...doc.data()
+            });
+        });
+        renderBusinessTable();
+        updateSummaries();
+    });
+}
         
         // 알림 표시
         function showNotification(message, type = 'info') {
@@ -566,8 +596,9 @@
         ceo: '-',
         businessNumber: '-'
     };
-            } else {
-                client = clients.find(c => c.id == clientId);
+} else {
+    client = clients.find(c => c.id == clientId);
+}
             }
             
             if (!client) {
