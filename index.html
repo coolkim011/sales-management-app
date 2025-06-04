@@ -627,6 +627,7 @@
         function addBusinessSale() {
             const date = document.getElementById('business-date').value;
             const clientId = document.getElementById('business-client').value;
+            const customer = document.getElementById('business-customer').value;
             const product = document.getElementById('business-product').value;
             const amount = parseInt(document.getElementById('business-amount').value) || 0;
             const tax = parseInt(document.getElementById('business-tax').value) || 0;
@@ -782,6 +783,7 @@
                 html += `<tr>
                     <td>${sale.date}</td>
                     <td>${sale.client.company}</td>
+                    <td>${sale.customer || '-'}</td>
                     <td>${sale.product}</td>
                     <td>₩${sale.supplyAmount.toLocaleString()}</td>
                     <td>₩${sale.tax.toLocaleString()}</td>
@@ -843,6 +845,7 @@
             
             select.innerHTML = '<option value="">거래처를 선택하세요</option>';
             select.innerHTML += '<option value="smartstore">스마트스토어</option>';
+            select.innerHTML += '<option value="platform">플랫폼</option>';
             select.innerHTML += '<option value="도급">도급</option>';
             select.innerHTML += '<option value="카드매출">카드매출</option>';
             
@@ -938,6 +941,7 @@
         
         function clearBusinessForm() {
             document.getElementById('business-client').value = '';
+            document.getElementById('business-customer').value = '';
             document.getElementById('business-product').value = '';
             document.getElementById('business-amount').value = '';
             document.getElementById('business-tax').value = '';
