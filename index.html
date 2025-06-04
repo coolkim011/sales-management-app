@@ -250,55 +250,7 @@
         </div>
     </div>
 </div>
-                        <select id="business-client">
-                            <option value="">거래처를 선택하세요</option>
-                            <option value="smartstore">스마트스토어</option>
-                            <option value="도급">도급</option>
-                            <option value="카드매출">카드매출</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>상품/서비스</label>
-                        <input type="text" id="business-product" placeholder="상품/서비스명">
-                    </div>
-                    <div class="form-group">
-                        <label>매출금액 (부가세 포함)</label>
-                        <input type="number" id="business-amount" placeholder="금액 입력" oninput="calculateTax()">
-                    </div>
-                    <div class="form-group">
-                        <label>부가세</label>
-                        <input type="number" id="business-tax" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>비고</label>
-                        <textarea id="business-memo" placeholder="추가 정보"></textarea>
-                    </div>
-                    <button class="btn" onclick="addBusinessSale()">사업자매출 추가</button>
-                </div>
-                
-                <div class="table-card">
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>날짜</th>
-                                    <th>거래처명</th>
-                                    <th>상품/서비스</th>
-                                    <th>공급가액</th>
-                                    <th>부가세</th>
-                                    <th>총금액</th>
-                                    <th>비고</th>
-                                    <th>삭제</th>
-                                </tr>
-                            </thead>
-                            <tbody id="business-table">
-                                <tr><td colspan="8" class="empty-state">등록된 사업자매출이 없습니다</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
+
             <!-- 지출 관리 화면 -->
             <div id="expense-screen" class="screen">
                 <div class="summary-cards">
