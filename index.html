@@ -11,21 +11,16 @@
     <meta name="description" content="현금매출과 사업자매출을 쉽게 관리하는 앱">
     <title>매출 관리 앱</title>
     
-    <!-- SheetJS for Excel export -->
+  
+    
+       <!-- SheetJS for Excel export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            min-height: 100vh; 
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .app-container { max-width: 100vw; min-height: 100vh; background: white; display: flex; flex-direction: column; }
         .app-container { max-width: 100vw; min-height: 100vh; background: white; display: flex; flex-direction: column; position: relative; }
-        .app-header { background: linear-gradient(45deg, #2c3e50, #34495e); color: white; padding: 20px; text-align: center; position: relative; }
         .app-header h1 { font-size: 1.5em; margin-bottom: 5px; }
         .app-header p { font-size: 0.9em; opacity: 0.8; }
         .sync-status { position: absolute; top: 10px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 12px; }
@@ -34,7 +29,7 @@
         .tab-bar { display: flex; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
         .tab-btn { flex: 1; padding: 12px 8px; text-align: center; cursor: pointer; background: #f8f9fa; border: none; font-size: 11px; font-weight: 600; color: #495057; }
         .tab-btn.active { background: white; color: #2c3e50; border-bottom: 3px solid #3498db; }
-        .content { flex: 1; padding: 15px; padding-bottom: 80px; overflow-y: auto; }
+        .content { flex: 1; padding: 15px; padding-bottom: 80px; }
         .screen { display: none; }
         .screen.active { display: block; }
         .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
@@ -48,13 +43,13 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3498db; }
         .btn { width: 100%; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; }
-        .table-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e9ecef; margin-bottom: 20px; }
+        .table-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e9ecef; }
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { background: linear-gradient(45deg, #34495e, #2c3e50); color: white; padding: 10px 6px; text-align: left; font-size: 11px; }
         td { padding: 8px 6px; border-bottom: 1px solid #e9ecef; font-size: 11px; }
         .delete-btn { background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e9ecef; padding: 10px; z-index: 100; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e9ecef; padding: 10px; }
         .nav-btn { width: 100%; background: linear-gradient(45deg, #27ae60, #229954); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
         .empty-state { text-align: center; padding: 30px 20px; color: #6c757d; font-size: 14px; }
         .stats-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
@@ -74,8 +69,6 @@
             .summary-cards { grid-template-columns: repeat(2, 1fr); }
             .period-tabs { flex-direction: column; }
             .period-tab { margin-bottom: 5px; }
-            .content { padding: 10px; padding-bottom: 80px; }
-            .table-container { max-height: 400px; overflow-y: auto; }
         }
     </style>
 </head>
@@ -84,7 +77,7 @@
         <div class="app-header">
             <div class="sync-status">
                 <div class="sync-indicator"></div>
-                <span>로컬 저장</span>
+                <span>테스트 모드</span>
             </div>
             <h1>💰 매출 관리</h1>
             <p>현금매출과 사업자매출을 쉽게 관리하세요</p>
@@ -422,6 +415,21 @@
     <div id="notification" class="notification"></div>
     
     <script>
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBQ0zie0IIlTayV8LSFwKzPeQcmecfva8",
+            authDomain: "sales-management-app-b78e6.firebaseapp.com",
+            projectId: "sales-management-app-b78e6",
+            storageBucket: "sales-management-app-b78e6.firebasestorage.app",
+            messagingSenderId: "157758583403",
+            appId: "1:157758583403:web:ccf13a0881028beba5244e",
+            measurementId: "G-FDY3H4RJF5"
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
         // 전역 변수
         let cashSales = [];
         let businessSales = [];
@@ -429,89 +437,68 @@
         let expenses = [];
         let currentStatsMode = 'current';
         
-        // 로컬 저장소 키
-        const STORAGE_KEYS = {
-            cashSales: 'cashSales',
-            businessSales: 'businessSales',
-            clients: 'clients',
-            expenses: 'expenses'
-        };
-        
-        // 로컬 저장소에서 데이터 불러오기
-        function loadFromStorage() {
-            try {
-                console.log('데이터 로딩 시작...');
-                
-                const cashData = localStorage.getItem(STORAGE_KEYS.cashSales);
-                const businessData = localStorage.getItem(STORAGE_KEYS.businessSales);
-                const clientData = localStorage.getItem(STORAGE_KEYS.clients);
-                const expenseData = localStorage.getItem(STORAGE_KEYS.expenses);
-                
-                cashSales = cashData ? JSON.parse(cashData) : [];
-                businessSales = businessData ? JSON.parse(businessData) : [];
-                clients = clientData ? JSON.parse(clientData) : [];
-                expenses = expenseData ? JSON.parse(expenseData) : [];
-                
-                console.log('로딩된 데이터:');
-                console.log('- 현금매출:', cashSales.length, '건');
-                console.log('- 사업자매출:', businessSales.length, '건');
-                console.log('- 거래처:', clients.length, '개');
-                console.log('- 지출:', expenses.length, '건');
-                
-            } catch (error) {
-                console.error('데이터 로드 오류:', error);
-                cashSales = [];
-                businessSales = [];
-                clients = [];
-                expenses = [];
-                showNotification('저장된 데이터를 불러오는데 실패했습니다.', 'error');
-            }
-        }
-        
-        // 로컬 저장소에 데이터 저장
-        function saveToStorage() {
-            try {
-                localStorage.setItem(STORAGE_KEYS.cashSales, JSON.stringify(cashSales));
-                localStorage.setItem(STORAGE_KEYS.businessSales, JSON.stringify(businessSales));
-                localStorage.setItem(STORAGE_KEYS.clients, JSON.stringify(clients));
-                localStorage.setItem(STORAGE_KEYS.expenses, JSON.stringify(expenses));
-                
-                console.log('데이터 저장 완료:');
-                console.log('- 현금매출:', cashSales.length, '건');
-                console.log('- 사업자매출:', businessSales.length, '건');
-                console.log('- 거래처:', clients.length, '개');
-                console.log('- 지출:', expenses.length, '건');
-                
-            } catch (error) {
-                console.error('데이터 저장 오류:', error);
-                showNotification('데이터 저장에 실패했습니다.', 'error');
-            }
-        }
-        
         // 초기화 함수
         function init() {
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('cash-date').value = today;
-                document.getElementById('business-date').value = today;
-                document.getElementById('expense-date').value = today;
-                
-                // 로컬 저장소에서 데이터 불러오기
-                loadFromStorage();
-                
-                // 모든 테이블과 요약 정보 렌더링
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('cash-date').value = today;
+            document.getElementById('business-date').value = today;
+            document.getElementById('expense-date').value = today;
+            
+            // Firebase에서 데이터 불러오기
+            function init() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('cash-date').value = today;
+        document.getElementById('business-date').value = today;
+        document.getElementById('expense-date').value = today;
+        
+        // 로컬 저장소에서 데이터 불러오기
+        loadFromStorage();
+        
+        // 모든 테이블과 요약 정보 렌더링
+        renderCashTable();
+        renderBusinessTable();
+        renderExpenseTable();
+        renderClientTable();
+        updateClientSelect();
+        updateSummaries();
+        
+        console.log('앱 초기화 완료');
+    } catch (error) {
+        console.error('앱 초기화 오류:', error);
+        showNotification('앱 초기화 중 오류가 발생했습니다.', 'error');
+    }
+}
+            updateClientSelect();
+        }
+
+        // Firebase 데이터 불러오기
+        function loadFirebaseData() {
+            // 현금매출 불러오기
+            db.collection("cashSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                cashSales = [];
+                snapshot.forEach((doc) => {
+                    cashSales.push({
+                        id: doc.data().id || doc.id,
+                        ...doc.data()
+                    });
+                });
                 renderCashTable();
-                renderBusinessTable();
-                renderExpenseTable();
-                renderClientTable();
-                updateClientSelect();
                 updateSummaries();
-                
-                console.log('앱 초기화 완료');
-            } catch (error) {
-                console.error('앱 초기화 오류:', error);
-                showNotification('앱 초기화 중 오류가 발생했습니다.', 'error');
-            }
+            });
+            
+            // 사업자매출 불러오기
+            db.collection("businessSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                businessSales = [];
+                snapshot.forEach((doc) => {
+                    businessSales.push({
+                        id: doc.data().id || doc.id,
+                        ...doc.data()
+                    });
+                });
+                renderBusinessTable();
+                updateSummaries();
+            });
         }
         
         // 알림 표시
@@ -544,38 +531,30 @@
         
         // 부가세 자동 계산
         function calculateTax() {
-            try {
-                const total = parseInt(document.getElementById('business-amount').value) || 0;
-                const tax = Math.round(total / 11);
-                document.getElementById('business-tax').value = tax;
-            } catch (error) {
-                console.error('부가세 계산 오류:', error);
-            }
+            const total = parseInt(document.getElementById('business-amount').value) || 0;
+            const tax = Math.round(total / 11);
+            document.getElementById('business-tax').value = tax;
         }
         
         // 지출 카테고리 업데이트
         function updateExpenseCategory() {
-            try {
-                const type = document.getElementById('expense-type').value;
-                const categoryGroup = document.getElementById('expense-category-group');
-                const categorySelect = document.getElementById('expense-category');
-                
-                if (type === '일반지출') {
-                    categoryGroup.style.display = 'block';
-                    categorySelect.innerHTML = '<option value="">카테고리 선택</option>' +
-                        '<option value="식대">식대</option>' +
-                        '<option value="유류비">유류비</option>' +
-                        '<option value="공과금">공과금</option>' +
-                        '<option value="잡지출">잡지출</option>';
-                } else if (type === '고정지출') {
-                    categoryGroup.style.display = 'block';
-                    categorySelect.innerHTML = '<option value="고정지출">고정지출</option>';
-                    categorySelect.value = '고정지출';
-                } else {
-                    categoryGroup.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('지출 카테고리 업데이트 오류:', error);
+            const type = document.getElementById('expense-type').value;
+            const categoryGroup = document.getElementById('expense-category-group');
+            const categorySelect = document.getElementById('expense-category');
+            
+            if (type === '일반지출') {
+                categoryGroup.style.display = 'block';
+                categorySelect.innerHTML = '<option value="">카테고리 선택</option>' +
+                    '<option value="식대">식대</option>' +
+                    '<option value="유류비">유류비</option>' +
+                    '<option value="공과금">공과금</option>' +
+                    '<option value="잡지출">잡지출</option>';
+            } else if (type === '고정지출') {
+                categoryGroup.style.display = 'block';
+                categorySelect.innerHTML = '<option value="고정지출">고정지출</option>';
+                categorySelect.value = '고정지출';
+            } else {
+                categoryGroup.style.display = 'none';
             }
         }
         
@@ -593,23 +572,21 @@
                 return;
             }
             
-            const newSale = {
-                id: Date.now(),
+            db.collection("cashSales").add({
                 date: date,
                 customer: customer,
                 product: product,
                 amount: amount,
                 route: route,
                 memo: memo,
-                timestamp: new Date()
-            };
-            
-            cashSales.unshift(newSale);
-            saveToStorage();
-            renderCashTable();
-            updateSummaries();
-            clearCashForm();
-            showNotification('현금매출이 추가되었습니다.', 'success');
+                timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
+            }).then(() => {
+                clearCashForm();
+                showNotification('현금매출이 추가되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('현금매출 추가 오류:', error);
+                showNotification('매출 추가에 실패했습니다.', 'error');
+            });
         }
         
         // 사업자매출 추가
@@ -635,13 +612,6 @@
                     ceo: '네이버',
                     businessNumber: '-'
                 };
-            } else if (clientId === 'platform') {
-                client = {
-                    id: 'platform',
-                    company: '플랫폼',
-                    ceo: '-',
-                    businessNumber: '-'
-                };
             } else if (clientId === '카드매출') {
                 client = {
                     id: '카드매출',
@@ -665,26 +635,23 @@
                 return;
             }
             
-            const newSale = {
-                id: Date.now(),
+            db.collection("businessSales").add({
                 date: date,
                 clientId: clientId,
                 client: client,
-                customer: customer,
                 product: product,
                 amount: amount,
                 tax: tax,
                 supplyAmount: amount - tax,
                 memo: memo,
-                timestamp: new Date()
-            };
-            
-            businessSales.unshift(newSale);
-            saveToStorage();
-            renderBusinessTable();
-            updateSummaries();
-            clearBusinessForm();
-            showNotification('사업자매출이 추가되었습니다.', 'success');
+                timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
+            }).then(() => {
+                clearBusinessForm();
+                showNotification('사업자매출이 추가되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('사업자매출 추가 오류:', error);
+                showNotification('매출 추가에 실패했습니다.', 'error');
+            });
         }
         
         // 지출 추가
@@ -701,28 +668,15 @@
                 return;
             }
             
-            const newExpense = {
+            expenses.push({
                 id: Date.now(),
                 date: date,
                 type: type,
                 category: category,
                 description: description,
                 amount: amount,
-                memo: memo,
-                timestamp: new Date()
-            };
-            
-            expenses.unshift(newExpense);
-            
-            // 즉시 저장하고 확인
-            try {
-                localStorage.setItem(STORAGE_KEYS.expenses, JSON.stringify(expenses));
-                console.log('지출 데이터 저장됨:', expenses.length, '건');
-            } catch (error) {
-                console.error('지출 데이터 저장 실패:', error);
-                showNotification('데이터 저장에 실패했습니다.', 'error');
-                return;
-            }
+                memo: memo
+            });
             
             renderExpenseTable();
             updateSummaries();
@@ -743,7 +697,7 @@
                 return;
             }
             
-            const newClient = {
+            clients.push({
                 id: Date.now(),
                 company: company,
                 businessNumber: businessNumber,
@@ -751,10 +705,8 @@
                 phone: phone,
                 memo: memo,
                 registeredDate: new Date().toISOString().split('T')[0]
-            };
+            });
             
-            clients.unshift(newClient);
-            saveToStorage();
             renderClientTable();
             updateClientSelect();
             updateSummaries();
@@ -779,7 +731,7 @@
                     <td>₩${sale.amount.toLocaleString()}</td>
                     <td>${sale.route}</td>
                     <td>${sale.memo || '-'}</td>
-                    <td><button class="delete-btn" onclick="deleteCash(${sale.id})">삭제</button></td>
+                    <td><button class="delete-btn" onclick="deleteCash('${sale.id}')">삭제</button></td>
                 </tr>`;
             });
             tbody.innerHTML = html;
@@ -788,7 +740,7 @@
         function renderBusinessTable() {
             const tbody = document.getElementById('business-table');
             if (businessSales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">등록된 사업자매출이 없습니다</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 사업자매출이 없습니다</td></tr>';
                 return;
             }
             
@@ -803,7 +755,7 @@
                     <td>₩${sale.tax.toLocaleString()}</td>
                     <td>₩${sale.amount.toLocaleString()}</td>
                     <td>${sale.memo || '-'}</td>
-                    <td><button class="delete-btn" onclick="deleteBusiness(${sale.id})">삭제</button></td>
+                    <td><button class="delete-btn" onclick="deleteBusiness('${sale.id}')">삭제</button></td>
                 </tr>`;
             });
             tbody.innerHTML = html;
@@ -906,36 +858,29 @@
         function deleteCash(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
-            cashSales = cashSales.filter(sale => sale.id !== id);
-            saveToStorage();
-            renderCashTable();
-            updateSummaries();
-            showNotification('현금매출이 삭제되었습니다.', 'success');
+            db.collection("cashSales").doc(id).delete().then(() => {
+                showNotification('현금매출이 삭제되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('삭제 오류:', error);
+                showNotification('삭제에 실패했습니다.', 'error');
+            });
         }
         
         function deleteBusiness(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
-            businessSales = businessSales.filter(sale => sale.id !== id);
-            saveToStorage();
-            renderBusinessTable();
-            updateSummaries();
-            showNotification('사업자매출이 삭제되었습니다.', 'success');
+            db.collection("businessSales").doc(id).delete().then(() => {
+                showNotification('사업자매출이 삭제되었습니다.', 'success');
+            }).catch((error) => {
+                console.error('삭제 오류:', error);
+                showNotification('삭제에 실패했습니다.', 'error');
+            });
         }
         
         function deleteExpense(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
             expenses = expenses.filter(expense => expense.id !== id);
-            
-            // 즉시 저장하고 확인
-            try {
-                localStorage.setItem(STORAGE_KEYS.expenses, JSON.stringify(expenses));
-                console.log('지출 삭제 후 저장됨:', expenses.length, '건');
-            } catch (error) {
-                console.error('지출 삭제 후 저장 실패:', error);
-            }
-            
             renderExpenseTable();
             updateSummaries();
             showNotification('지출이 삭제되었습니다.', 'success');
@@ -945,7 +890,6 @@
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
             clients = clients.filter(client => client.id !== id);
-            saveToStorage();
             renderClientTable();
             updateClientSelect();
             updateSummaries();
@@ -1063,14 +1007,13 @@
                 XLSX.utils.book_append_sheet(wb, cashWs, '현금매출');
                 
                 // 사업자매출 시트
-                const businessHeaders = ['날짜', '거래처명', '고객명', '상품/서비스', '공급가액', '부가세', '총금액', '비고'];
+                const businessHeaders = ['날짜', '거래처명', '상품/서비스', '공급가액', '부가세', '총금액', '비고'];
                 const businessData = [businessHeaders];
                 
                 businessSales.forEach(sale => {
                     businessData.push([
                         sale.date,
                         sale.client.company,
-                        sale.customer || '',
                         sale.product,
                         sale.supplyAmount,
                         sale.tax,
@@ -1130,22 +1073,7 @@
         }
         
         // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                init();
-            } catch (error) {
-                console.error('DOM 로드 후 초기화 오류:', error);
-            }
-        });
-        
-        // 페이지 언로드 시 데이터 저장
-        window.addEventListener('beforeunload', function() {
-            try {
-                saveToStorage();
-            } catch (error) {
-                console.error('페이지 종료 시 저장 오류:', error);
-            }
-        });
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
