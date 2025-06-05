@@ -11,18 +11,9 @@
     <meta name="description" content="현금매출과 사업자매출을 쉽게 관리하는 앱">
     <title>매출 관리 앱</title>
     
-    <!-- 완벽한 앱 아이콘들 -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-    <link rel="apple-touch-icon" href="/icon-180.png">
+  
     
-    <!-- PWA 매니페스트 -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Firebase Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-firestore.min.js"></script>
-    
-    <!-- SheetJS for Excel export -->
+       <!-- SheetJS for Excel export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
@@ -454,7 +445,30 @@
             document.getElementById('expense-date').value = today;
             
             // Firebase에서 데이터 불러오기
-            loadFirebaseData();
+            function init() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('cash-date').value = today;
+        document.getElementById('business-date').value = today;
+        document.getElementById('expense-date').value = today;
+        
+        // 로컬 저장소에서 데이터 불러오기
+        loadFromStorage();
+        
+        // 모든 테이블과 요약 정보 렌더링
+        renderCashTable();
+        renderBusinessTable();
+        renderExpenseTable();
+        renderClientTable();
+        updateClientSelect();
+        updateSummaries();
+        
+        console.log('앱 초기화 완료');
+    } catch (error) {
+        console.error('앱 초기화 오류:', error);
+        showNotification('앱 초기화 중 오류가 발생했습니다.', 'error');
+    }
+}
             updateClientSelect();
         }
 
