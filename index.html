@@ -19,8 +19,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .app-container { max-width: 100vw; min-height: 100vh; background: white; display: flex; flex-direction: column; }
         .app-container { max-width: 100vw; min-height: 100vh; background: white; display: flex; flex-direction: column; position: relative; }
+        .app-header { background: linear-gradient(45deg, #2c3e50, #34495e); color: white; padding: 20px; text-align: center; position: relative; }
         .app-header h1 { font-size: 1.5em; margin-bottom: 5px; }
         .app-header p { font-size: 0.9em; opacity: 0.8; }
         .sync-status { position: absolute; top: 10px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 12px; }
@@ -415,21 +415,6 @@
     <div id="notification" class="notification"></div>
     
     <script>
-        // Firebase 설정
-        const firebaseConfig = {
-            apiKey: "AIzaSyCBQ0zie0IIlTayV8LSFwKzPeQcmecfva8",
-            authDomain: "sales-management-app-b78e6.firebaseapp.com",
-            projectId: "sales-management-app-b78e6",
-            storageBucket: "sales-management-app-b78e6.firebasestorage.app",
-            messagingSenderId: "157758583403",
-            appId: "1:157758583403:web:ccf13a0881028beba5244e",
-            measurementId: "G-FDY3H4RJF5"
-        };
-
-        // Firebase 초기화
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
         // 전역 변수
         let cashSales = [];
         let businessSales = [];
@@ -444,61 +429,88 @@
             document.getElementById('business-date').value = today;
             document.getElementById('expense-date').value = today;
             
-            // Firebase에서 데이터 불러오기
-            function init() {
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('cash-date').value = today;
-        document.getElementById('business-date').value = today;
-        document.getElementById('expense-date').value = today;
+         // 초기화 함수
+        function init() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('cash-date').value = today;
+                document.getElementById('business-date').value = today;
+                document.getElementById('expense-date').value = today;
+                
+                // 로컬 저장소에서 데이터 불러오기
+                loadFromStorage();
+                
+                // 모든 테이블과 요약 정보 렌더링
+                renderCashTable();
+                renderBusinessTable();
+                renderExpenseTable();
+                renderClientTable();
+                updateClientSelect();
+                updateSummaries();
+                
+                console.log('앱 초기화 완료');
+            } catch (error) {
+                console.error('앱 초기화 오류:', error);
+                showNotification('앱 초기화 중 오류가 발생했습니다.', 'error');
+            }
+        }
+        // 로컬 저장소 키
+        const STORAGE_KEYS = {
+            cashSales: 'cashSales',
+            businessSales: 'businessSales',
+            clients: 'clients',
+            expenses: 'expenses'
+        };
         
         // 로컬 저장소에서 데이터 불러오기
-        loadFromStorage();
-        
-        // 모든 테이블과 요약 정보 렌더링
-        renderCashTable();
-        renderBusinessTable();
-        renderExpenseTable();
-        renderClientTable();
-        updateClientSelect();
-        updateSummaries();
-        
-        console.log('앱 초기화 완료');
-    } catch (error) {
-        console.error('앱 초기화 오류:', error);
-        showNotification('앱 초기화 중 오류가 발생했습니다.', 'error');
-    }
-}
-            updateClientSelect();
-        }
-
-        // Firebase 데이터 불러오기
-        function loadFirebaseData() {
-            // 현금매출 불러오기
-            db.collection("cashSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        function loadFromStorage() {
+            try {
+                console.log('데이터 로딩 시작...');
+                
+                const cashData = localStorage.getItem(STORAGE_KEYS.cashSales);
+                const businessData = localStorage.getItem(STORAGE_KEYS.businessSales);
+                const clientData = localStorage.getItem(STORAGE_KEYS.clients);
+                const expenseData = localStorage.getItem(STORAGE_KEYS.expenses);
+                
+                cashSales = cashData ? JSON.parse(cashData) : [];
+                businessSales = businessData ? JSON.parse(businessData) : [];
+                clients = clientData ? JSON.parse(clientData) : [];
+                expenses = expenseData ? JSON.parse(expenseData) : [];
+                
+                console.log('로딩된 데이터:');
+                console.log('- 현금매출:', cashSales.length, '건');
+                console.log('- 사업자매출:', businessSales.length, '건');
+                console.log('- 거래처:', clients.length, '개');
+                console.log('- 지출:', expenses.length, '건');
+                
+            } catch (error) {
+                console.error('데이터 로드 오류:', error);
                 cashSales = [];
-                snapshot.forEach((doc) => {
-                    cashSales.push({
-                        id: doc.data().id || doc.id,
-                        ...doc.data()
-                    });
-                });
-                renderCashTable();
-                updateSummaries();
-            });
-            
-            // 사업자매출 불러오기
-            db.collection("businessSales").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
                 businessSales = [];
-                snapshot.forEach((doc) => {
-                    businessSales.push({
-                        id: doc.data().id || doc.id,
-                        ...doc.data()
-                    });
-                });
-                renderBusinessTable();
-                updateSummaries();
-            });
+                clients = [];
+                expenses = [];
+                showNotification('저장된 데이터를 불러오는데 실패했습니다.', 'error');
+            }
+        }
+        
+        // 로컬 저장소에 데이터 저장
+        function saveToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.cashSales, JSON.stringify(cashSales));
+                localStorage.setItem(STORAGE_KEYS.businessSales, JSON.stringify(businessSales));
+                localStorage.setItem(STORAGE_KEYS.clients, JSON.stringify(clients));
+                localStorage.setItem(STORAGE_KEYS.expenses, JSON.stringify(expenses));
+                
+                console.log('데이터 저장 완료:');
+                console.log('- 현금매출:', cashSales.length, '건');
+                console.log('- 사업자매출:', businessSales.length, '건');
+                console.log('- 거래처:', clients.length, '개');
+                console.log('- 지출:', expenses.length, '건');
+                
+            } catch (error) {
+                console.error('데이터 저장 오류:', error);
+                showNotification('데이터 저장에 실패했습니다.', 'error');
+            }
         }
         
         // 알림 표시
@@ -572,21 +584,23 @@
                 return;
             }
             
-            db.collection("cashSales").add({
-                date: date,
-                customer: customer,
-                product: product,
-                amount: amount,
-                route: route,
-                memo: memo,
-                timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
-            }).then(() => {
-                clearCashForm();
-                showNotification('현금매출이 추가되었습니다.', 'success');
-            }).catch((error) => {
-                console.error('현금매출 추가 오류:', error);
-                showNotification('매출 추가에 실패했습니다.', 'error');
-            });
+const newSale = {
+    id: Date.now(),
+    date: date,
+    customer: customer,
+    product: product,
+    amount: amount,
+    route: route,
+    memo: memo,
+    timestamp: new Date()
+};
+
+cashSales.unshift(newSale);
+saveToStorage();
+renderCashTable();
+updateSummaries();
+clearCashForm();
+showNotification('현금매출이 추가되었습니다.', 'success');
         }
         
         // 사업자매출 추가
@@ -635,23 +649,26 @@
                 return;
             }
             
-            db.collection("businessSales").add({
-                date: date,
-                clientId: clientId,
-                client: client,
-                product: product,
-                amount: amount,
-                tax: tax,
-                supplyAmount: amount - tax,
-                memo: memo,
-                timestamp: new Date(new Date().getTime() + (9 * 60 * 60 * 1000))
-            }).then(() => {
-                clearBusinessForm();
-                showNotification('사업자매출이 추가되었습니다.', 'success');
-            }).catch((error) => {
-                console.error('사업자매출 추가 오류:', error);
-                showNotification('매출 추가에 실패했습니다.', 'error');
-            });
+           const newSale = {
+    id: Date.now(),
+    date: date,
+    clientId: clientId,
+    client: client,
+    customer: customer,
+    product: product,
+    amount: amount,
+    tax: tax,
+    supplyAmount: amount - tax,
+    memo: memo,
+    timestamp: new Date()
+};
+
+businessSales.unshift(newSale);
+saveToStorage();
+renderBusinessTable();
+updateSummaries();
+clearBusinessForm();
+showNotification('사업자매출이 추가되었습니다.', 'success');
         }
         
         // 지출 추가
@@ -677,7 +694,8 @@
                 amount: amount,
                 memo: memo
             });
-            
+
+            saveToStorage();
             renderExpenseTable();
             updateSummaries();
             clearExpenseForm();
@@ -858,29 +876,28 @@
         function deleteCash(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
-            db.collection("cashSales").doc(id).delete().then(() => {
-                showNotification('현금매출이 삭제되었습니다.', 'success');
-            }).catch((error) => {
-                console.error('삭제 오류:', error);
-                showNotification('삭제에 실패했습니다.', 'error');
-            });
+            cashSales = cashSales.filter(sale => sale.id !== id);
+saveToStorage();
+renderCashTable();
+updateSummaries();
+showNotification('현금매출이 삭제되었습니다.', 'success');
         }
         
         function deleteBusiness(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
-            db.collection("businessSales").doc(id).delete().then(() => {
-                showNotification('사업자매출이 삭제되었습니다.', 'success');
-            }).catch((error) => {
-                console.error('삭제 오류:', error);
-                showNotification('삭제에 실패했습니다.', 'error');
-            });
+            businessSales = businessSales.filter(sale => sale.id !== id);
+saveToStorage();
+renderBusinessTable();
+updateSummaries();
+showNotification('사업자매출이 삭제되었습니다.', 'success');
         }
         
         function deleteExpense(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
             expenses = expenses.filter(expense => expense.id !== id);
+            saveToStorage();
             renderExpenseTable();
             updateSummaries();
             showNotification('지출이 삭제되었습니다.', 'success');
@@ -890,6 +907,7 @@
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
             clients = clients.filter(client => client.id !== id);
+            saveToStorage();
             renderClientTable();
             updateClientSelect();
             updateSummaries();
@@ -1073,7 +1091,22 @@
         }
         
         // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        init();
+    } catch (error) {
+        console.error('DOM 로드 후 초기화 오류:', error);
+    }
+});
+
+// 페이지 언로드 시 데이터 저장
+window.addEventListener('beforeunload', function() {
+    try {
+        saveToStorage();
+    } catch (error) {
+        console.error('페이지 종료 시 저장 오류:', error);
+    }
+});
     </script>
 </body>
 </html>
