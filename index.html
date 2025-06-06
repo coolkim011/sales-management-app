@@ -422,13 +422,6 @@ let clients = [];
 let expenses = [];
 let currentStatsMode = 'current';
         
-        // 초기화 함수
-        function init() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('cash-date').value = today;
-            document.getElementById('business-date').value = today;
-            document.getElementById('expense-date').value = today;
-            
          // 초기화 함수
         function init() {
             try {
@@ -595,9 +588,9 @@ const newSale = {
     timestamp: new Date()
 };
 
-cashSales.unshift(newSale);
-saveToStorage();
-renderCashTable();
+cashSales.unshift(newSale);  //
+saveToStorage();  //
+renderCashTable();  //
 updateSummaries();
 clearCashForm();
 showNotification('현금매출이 추가되었습니다.', 'success');
@@ -724,7 +717,8 @@ showNotification('사업자매출이 추가되었습니다.', 'success');
                 memo: memo,
                 registeredDate: new Date().toISOString().split('T')[0]
             });
-            
+
+            saveToStorage();
             renderClientTable();
             updateClientSelect();
             updateSummaries();
@@ -758,7 +752,7 @@ showNotification('사업자매출이 추가되었습니다.', 'success');
         function renderBusinessTable() {
             const tbody = document.getElementById('business-table');
             if (businessSales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 사업자매출이 없습니다</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">등록된 사업자매출이 없습니다</td></tr>';
                 return;
             }
             
