@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#2c3e50">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="매출관리">
-    <meta name="description" content="현금매출과 사업자매출을 쉽게 관리하는 앱">
     <title>매출 관리 앱</title>
-    
-  
-    
-       <!-- SheetJS for Excel export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .app-container { max-width: 100vw; min-height: 100vh; background: white; display: flex; flex-direction: column; position: relative; }
-        .app-header { background: linear-gradient(45deg, #2c3e50, #34495e); color: white; padding: 20px; text-align: center; position: relative; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        
+        .container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .card { background: white; border-radius: 20px; padding: 40px; max-width: 400px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #2c3e50; margin-bottom: 10px; }
+        .group { margin-bottom: 20px; }
+        .group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        .group input { width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px; }
+        .group input:focus { outline: none; border-color: #3498db; }
+        .btn { width: 100%; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; }
+        
+        .app { max-width: 100vw; min-height: 100vh; background: white; display: none; flex-direction: column; }
+        .app-header { background: linear-gradient(45deg, #2c3e50, #34495e); color: white; padding: 20px; text-align: center; }
         .app-header h1 { font-size: 1.5em; margin-bottom: 5px; }
-        .app-header p { font-size: 0.9em; opacity: 0.8; }
-        .sync-status { position: absolute; top: 10px; right: 15px; display: flex; align-items: center; gap: 5px; font-size: 12px; }
-        .sync-indicator { width: 8px; height: 8px; border-radius: 50%; background: #27ae60; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        .tab-bar { display: flex; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
+        .user-info { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; color: white; }
+        .logout-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        
+        .tab-bar { display: flex; background: #f8f9fa; }
         .tab-btn { flex: 1; padding: 12px 8px; text-align: center; cursor: pointer; background: #f8f9fa; border: none; font-size: 11px; font-weight: 600; color: #495057; }
         .tab-btn.active { background: white; color: #2c3e50; border-bottom: 3px solid #3498db; }
         .content { flex: 1; padding: 15px; padding-bottom: 80px; }
@@ -36,59 +35,72 @@
         .summary-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 12px; border-radius: 12px; text-align: center; }
         .summary-card h3 { font-size: 0.75em; margin-bottom: 8px; }
         .summary-card .amount { font-size: 1.1em; font-weight: bold; }
+        
         .form-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e9ecef; }
         .form-card h3 { color: #2c3e50; margin-bottom: 20px; font-size: 1.1em; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #2c3e50; font-size: 14px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3498db; }
-        .btn { width: 100%; background: linear-gradient(45deg, #3498db, #2980b9); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; }
+        
         .table-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e9ecef; }
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { background: linear-gradient(45deg, #34495e, #2c3e50); color: white; padding: 10px 6px; text-align: left; font-size: 11px; }
         td { padding: 8px 6px; border-bottom: 1px solid #e9ecef; font-size: 11px; }
         .delete-btn { background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+        .empty-state { text-align: center; padding: 30px 20px; color: #6c757d; font-size: 14px; }
+        
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e9ecef; padding: 10px; }
         .nav-btn { width: 100%; background: linear-gradient(45deg, #27ae60, #229954); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
-        .empty-state { text-align: center; padding: 30px 20px; color: #6c757d; font-size: 14px; }
-        .stats-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
-        .stats-item:last-child { border-bottom: none; }
-        .stats-label { color: #6c757d; }
-        .stats-value { font-weight: 600; color: #2c3e50; }
-        .period-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .period-tab { flex: 1; padding: 10px; border: 2px solid #e9ecef; background: white; border-radius: 8px; cursor: pointer; text-align: center; font-size: 12px; }
-        .period-tab.active { border-color: #3498db; background: #3498db; color: white; }
+        
         .notification { position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 8px; color: white; font-weight: 600; z-index: 1000; transform: translateX(400px); transition: transform 0.3s ease; }
         .notification.show { transform: translateX(0); }
         .notification.success { background: #27ae60; }
         .notification.error { background: #e74c3c; }
-        .notification.info { background: #3498db; }
-        @media (max-width: 768px) {
-            .tab-btn { font-size: 10px; padding: 10px 4px; }
-            .summary-cards { grid-template-columns: repeat(2, 1fr); }
-            .period-tabs { flex-direction: column; }
-            .period-tab { margin-bottom: 5px; }
-        }
     </style>
 </head>
 <body>
-    <div id="app-screen" class="app-container">
+    <!-- 로그인 화면 -->
+    <div id="login-screen" class="container">
+        <div class="card">
+            <div class="header">
+                <h1>💰 매출 관리</h1>
+                <p>현금매출과 사업자매출을 쉽게 관리하세요</p>
+            </div>
+            
+            <div class="group">
+                <label>사용자 이름</label>
+                <input type="text" id="username" value="admin">
+            </div>
+            <div class="group">
+                <label>비밀번호</label>
+                <input type="password" id="password" value="1234">
+            </div>
+            <button class="btn" onclick="doLogin()">로그인</button>
+            <p style="text-align: center; margin-top: 15px; color: #6c757d; font-size: 12px;">
+                데모: admin / 1234
+            </p>
+        </div>
+    </div>
+
+    <!-- 메인 앱 화면 -->
+    <div id="app-screen" class="app">
         <div class="app-header">
-            <div class="sync-status">
-                <div class="sync-indicator"></div>
-                <span>테스트 모드</span>
+            <div class="user-info">
+                <span id="current-user">사용자</span>
+                <button class="logout-btn" onclick="doLogout()">로그아웃</button>
             </div>
             <h1>💰 매출 관리</h1>
             <p>현금매출과 사업자매출을 쉽게 관리하세요</p>
         </div>
         
         <div class="tab-bar">
-            <button class="tab-btn active" onclick="switchTab('cash', this)">현금매출</button>
-            <button class="tab-btn" onclick="switchTab('business', this)">사업자매출</button>
-            <button class="tab-btn" onclick="switchTab('expense', this)">지출관리</button>
-            <button class="tab-btn" onclick="switchTab('client', this)">거래처</button>
-            <button class="tab-btn" onclick="switchTab('stats', this)">통계</button>
+            <button class="tab-btn active" onclick="switchScreen('cash', this)">현금매출</button>
+            <button class="tab-btn" onclick="switchScreen('business', this)">사업자매출</button>
+            <button class="tab-btn" onclick="switchScreen('expense', this)">지출관리</button>
+            <button class="tab-btn" onclick="switchScreen('client', this)">거래처</button>
+            <button class="tab-btn" onclick="switchScreen('stats', this)">통계</button>
         </div>
         
         <div class="content">
@@ -128,18 +140,14 @@
                         <select id="cash-route">
                             <option value="">매출 루트 선택</option>
                             <option value="현장판매">현장판매</option>
-                            <option value="전화주문">전화주문</option>
                             <option value="온라인">온라인</option>
                             <option value="지인추천">지인추천</option>
-                            <option value="크몽">크몽</option>
-                            <option value="당근">당근</option>
-                            <option value="숨고">숨고</option>
                             <option value="기타">기타</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>비고</label>
-                        <textarea id="cash-memo" placeholder="매출 루트에 대한 상세 정보"></textarea>
+                        <textarea id="cash-memo" placeholder="추가 정보"></textarea>
                     </div>
                     <button class="btn" onclick="addCashSale()">현금매출 추가</button>
                 </div>
@@ -166,83 +174,72 @@
                 </div>
             </div>
             
-           <!-- 사업자매출 화면 -->
-<div id="business-screen" class="screen">
-    <div class="summary-cards">
-        <div class="summary-card">
-            <h3>사업자매출 총계</h3>
-            <div class="amount" id="business-total">₩0</div>
-        </div>
-        <div class="summary-card">
-            <h3>사업자매출 건수</h3>
-            <div class="amount" id="business-count">0건</div>
-        </div>
-    </div>
-    
-    <div class="form-card">
-        <h3>🏢 사업자매출 등록</h3>
-        <div class="form-group">
-            <label>날짜</label>
-            <input type="date" id="business-date">
-        </div>
-        <div class="form-group">
-            <label>거래처 선택</label>
-            <select id="business-client">
-                <option value="">거래처를 선택하세요</option>
-                <option value="smartstore">스마트스토어</option>
-                <option value="platform">플랫폼</option>
-                <option value="도급">도급</option>
-                <option value="카드매출">카드매출</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>고객 이름</label>
-            <input type="text" id="business-customer" placeholder="고객명 입력">
-        </div>
-        <div class="form-group">
-            <label>상품/서비스</label>
-            <input type="text" id="business-product" placeholder="상품/서비스명">
-        </div>
-        <div class="form-group">
-            <label>매출금액 (부가세 포함)</label>
-            <input type="number" id="business-amount" placeholder="금액 입력" oninput="calculateTax()">
-        </div>
-        <div class="form-group">
-            <label>부가세</label>
-            <input type="number" id="business-tax" readonly>
-        </div>
-        <div class="form-group">
-            <label>비고</label>
-            <textarea id="business-memo" placeholder="추가 정보"></textarea>
-        </div>
-        <button class="btn" onclick="addBusinessSale()">사업자매출 추가</button>
-    </div>
-    
-    <div class="table-card">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>날짜</th>
-                        <th>거래처명</th>
-                        <th>고객명</th>
-                        <th>상품/서비스</th>
-                        <th>공급가액</th>
-                        <th>부가세</th>
-                        <th>총금액</th>
-                        <th>비고</th>
-                        <th>삭제</th>
-                    </tr>
-                </thead>
-                <tbody id="business-table">
-                    <tr><td colspan="9" class="empty-state">등록된 사업자매출이 없습니다</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+            <!-- 사업자매출 화면 -->
+            <div id="business-screen" class="screen">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>사업자매출 총계</h3>
+                        <div class="amount" id="business-total">₩0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>사업자매출 건수</h3>
+                        <div class="amount" id="business-count">0건</div>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <h3>🏢 사업자매출 등록</h3>
+                    <div class="form-group">
+                        <label>날짜</label>
+                        <input type="date" id="business-date">
+                    </div>
+                    <div class="form-group">
+                        <label>거래처명</label>
+                        <input type="text" id="business-client" placeholder="거래처명 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>상품/서비스</label>
+                        <input type="text" id="business-product" placeholder="상품/서비스명">
+                    </div>
+                    <div class="form-group">
+                        <label>매출금액 (부가세 포함)</label>
+                        <input type="number" id="business-amount" placeholder="금액 입력" oninput="calculateTax()">
+                    </div>
+                    <div class="form-group">
+                        <label>부가세</label>
+                        <input type="number" id="business-tax" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>비고</label>
+                        <textarea id="business-memo" placeholder="추가 정보"></textarea>
+                    </div>
+                    <button class="btn" onclick="addBusinessSale()">사업자매출 추가</button>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>거래처명</th>
+                                    <th>상품/서비스</th>
+                                    <th>공급가액</th>
+                                    <th>부가세</th>
+                                    <th>총금액</th>
+                                    <th>비고</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="business-table">
+                                <tr><td colspan="8" class="empty-state">등록된 사업자매출이 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-            <!-- 지출 관리 화면 -->
+            <!-- 지출관리 화면 -->
             <div id="expense-screen" class="screen">
                 <div class="summary-cards">
                     <div class="summary-card">
@@ -262,25 +259,24 @@
                         <input type="date" id="expense-date">
                     </div>
                     <div class="form-group">
-                        <label>지출 구분</label>
-                        <select id="expense-type" onchange="updateExpenseCategory()">
-                            <option value="">지출 구분 선택</option>
-                            <option value="고정지출">고정지출</option>
-                            <option value="일반지출">일반지출</option>
-                        </select>
+                        <label>지출처</label>
+                        <input type="text" id="expense-vendor" placeholder="지출처명 입력">
                     </div>
-                    <div class="form-group" id="expense-category-group" style="display: none;">
-                        <label>지출 카테고리</label>
+                    <div class="form-group">
+                        <label>지출항목</label>
                         <select id="expense-category">
-                            <option value="">카테고리 선택</option>
+                            <option value="">지출항목 선택</option>
+                            <option value="재료비">재료비</option>
+                            <option value="임대료">임대료</option>
+                            <option value="인건비">인건비</option>
+                            <option value="광고홍보비">광고홍보비</option>
+                            <option value="통신비">통신비</option>
+                            <option value="운송비">운송비</option>
+                            <option value="기타">기타</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>지출 내역</label>
-                        <input type="text" id="expense-description" placeholder="지출 내역 입력">
-                    </div>
-                    <div class="form-group">
-                        <label>지출 금액</label>
+                        <label>지출금액</label>
                         <input type="number" id="expense-amount" placeholder="금액 입력">
                     </div>
                     <div class="form-group">
@@ -296,54 +292,46 @@
                             <thead>
                                 <tr>
                                     <th>날짜</th>
-                                    <th>구분</th>
-                                    <th>카테고리</th>
-                                    <th>지출내역</th>
+                                    <th>지출처</th>
+                                    <th>항목</th>
                                     <th>금액</th>
                                     <th>비고</th>
                                     <th>삭제</th>
                                 </tr>
                             </thead>
                             <tbody id="expense-table">
-                                <tr><td colspan="7" class="empty-state">등록된 지출이 없습니다</td></tr>
+                                <tr><td colspan="6" class="empty-state">등록된 지출이 없습니다</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             
-            <!-- 거래처 관리 화면 -->
+            <!-- 거래처 화면 -->
             <div id="client-screen" class="screen">
-                <div class="summary-cards">
-                    <div class="summary-card">
-                        <h3>등록된 거래처</h3>
-                        <div class="amount" id="client-total">0개</div>
-                    </div>
-                </div>
-                
                 <div class="form-card">
                     <h3>🏢 거래처 등록</h3>
                     <div class="form-group">
-                        <label>회사명 (상호)</label>
-                        <input type="text" id="client-company" placeholder="회사명 입력">
+                        <label>거래처명</label>
+                        <input type="text" id="client-name" placeholder="거래처명 입력">
                     </div>
                     <div class="form-group">
-                        <label>사업자등록번호</label>
-                        <input type="text" id="client-business-number" placeholder="123-45-67890">
-                    </div>
-                    <div class="form-group">
-                        <label>대표자명</label>
-                        <input type="text" id="client-ceo" placeholder="대표자 이름">
+                        <label>사업자번호</label>
+                        <input type="text" id="client-business-number" placeholder="사업자번호 입력">
                     </div>
                     <div class="form-group">
                         <label>연락처</label>
-                        <input type="tel" id="client-phone" placeholder="010-1234-5678">
+                        <input type="text" id="client-contact" placeholder="연락처 입력">
+                    </div>
+                    <div class="form-group">
+                        <label>주소</label>
+                        <input type="text" id="client-address" placeholder="주소 입력">
                     </div>
                     <div class="form-group">
                         <label>비고</label>
-                        <textarea id="client-memo" placeholder="거래처 관련 메모"></textarea>
+                        <textarea id="client-memo" placeholder="추가 정보"></textarea>
                     </div>
-                    <button class="btn" onclick="addClient()">거래처 등록</button>
+                    <button class="btn" onclick="addClient()">거래처 추가</button>
                 </div>
                 
                 <div class="table-card">
@@ -351,11 +339,11 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>회사명</th>
+                                    <th>거래처명</th>
                                     <th>사업자번호</th>
-                                    <th>대표자</th>
                                     <th>연락처</th>
-                                    <th>등록일</th>
+                                    <th>주소</th>
+                                    <th>비고</th>
                                     <th>삭제</th>
                                 </tr>
                             </thead>
@@ -369,12 +357,6 @@
             
             <!-- 통계 화면 -->
             <div id="stats-screen" class="screen">
-                <div class="period-tabs">
-                    <button class="period-tab active" onclick="setPeriod('current', this)">이번 달</button>
-                    <button class="period-tab" onclick="setPeriod('compare', this)">전월 비교</button>
-                    <button class="period-tab" onclick="setPeriod('yearly', this)">전년 비교</button>
-                </div>
-                
                 <div class="summary-cards">
                     <div class="summary-card">
                         <h3>총 매출액</h3>
@@ -393,6 +375,31 @@
                         <div class="amount" id="total-count">0건</div>
                     </div>
                 </div>
+
+                <!-- 매출 vs 지출 원형 그래프 -->
+                <div class="form-card">
+                    <h3>📊 매출 vs 지출 비교</h3>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <canvas id="sales-expense-chart" width="300" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- 전달 vs 이번달 비교 -->
+                <div class="form-card">
+                    <h3>📈 전달 vs 이번달 비교</h3>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <canvas id="monthly-comparison-chart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- 월별 부가세 합계 -->
+                <div class="form-card">
+                    <h3>💰 월별 부가세 현황</h3>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <canvas id="monthly-tax-chart" width="400" height="200"></canvas>
+                    </div>
+                    <div id="monthly-tax-summary" style="margin-top: 15px; font-size: 14px;"></div>
+                </div>
                 
                 <div class="form-card">
                     <h3>📊 매출 루트별 현황</h3>
@@ -400,7 +407,7 @@
                 </div>
                 
                 <div class="form-card">
-                    <h3>💸 지출 카테고리별 현황</h3>
+                    <h3>💸 지출 항목별 현황</h3>
                     <div id="expense-stats">데이터를 등록하면 표시됩니다</div>
                 </div>
             </div>
@@ -411,158 +418,112 @@
         </div>
     </div>
     
-    <!-- 알림 메시지 -->
     <div id="notification" class="notification"></div>
     
     <script>
         // 전역 변수
-let cashSales = [];
-let businessSales = [];
-let clients = [];
-let expenses = [];
-let currentStatsMode = 'current';
-        
-         // 초기화 함수
-        function init() {
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('cash-date').value = today;
-                document.getElementById('business-date').value = today;
-                document.getElementById('expense-date').value = today;
-                
-                // 로컬 저장소에서 데이터 불러오기
-                loadFromStorage();
-                
-                // 모든 테이블과 요약 정보 렌더링
-                renderCashTable();
-                renderBusinessTable();
-                renderExpenseTable();
-                renderClientTable();
-                updateClientSelect();
-                updateSummaries();
-                
-                console.log('앱 초기화 완료');
-            } catch (error) {
-                console.error('앱 초기화 오류:', error);
-                showNotification('앱 초기화 중 오류가 발생했습니다.', 'error');
-            }
-        }
-        // 로컬 저장소 키
-        const STORAGE_KEYS = {
-            cashSales: 'cashSales',
-            businessSales: 'businessSales',
-            clients: 'clients',
-            expenses: 'expenses'
-        };
-        
-        // 로컬 저장소에서 데이터 불러오기
-        function loadFromStorage() {
-            try {
-                console.log('데이터 로딩 시작...');
-                
-                const cashData = localStorage.getItem(STORAGE_KEYS.cashSales);
-                const businessData = localStorage.getItem(STORAGE_KEYS.businessSales);
-                const clientData = localStorage.getItem(STORAGE_KEYS.clients);
-                const expenseData = localStorage.getItem(STORAGE_KEYS.expenses);
-                
-                cashSales = cashData ? JSON.parse(cashData) : [];
-                businessSales = businessData ? JSON.parse(businessData) : [];
-                clients = clientData ? JSON.parse(clientData) : [];
-                expenses = expenseData ? JSON.parse(expenseData) : [];
-                
-                console.log('로딩된 데이터:');
-                console.log('- 현금매출:', cashSales.length, '건');
-                console.log('- 사업자매출:', businessSales.length, '건');
-                console.log('- 거래처:', clients.length, '개');
-                console.log('- 지출:', expenses.length, '건');
-                
-            } catch (error) {
-                console.error('데이터 로드 오류:', error);
-                cashSales = [];
-                businessSales = [];
-                clients = [];
-                expenses = [];
-                showNotification('저장된 데이터를 불러오는데 실패했습니다.', 'error');
-            }
-        }
-        
-        // 로컬 저장소에 데이터 저장
-        function saveToStorage() {
-            try {
-                localStorage.setItem(STORAGE_KEYS.cashSales, JSON.stringify(cashSales));
-                localStorage.setItem(STORAGE_KEYS.businessSales, JSON.stringify(businessSales));
-                localStorage.setItem(STORAGE_KEYS.clients, JSON.stringify(clients));
-                localStorage.setItem(STORAGE_KEYS.expenses, JSON.stringify(expenses));
-                
-                console.log('데이터 저장 완료:');
-                console.log('- 현금매출:', cashSales.length, '건');
-                console.log('- 사업자매출:', businessSales.length, '건');
-                console.log('- 거래처:', clients.length, '개');
-                console.log('- 지출:', expenses.length, '건');
-                
-            } catch (error) {
-                console.error('데이터 저장 오류:', error);
-                showNotification('데이터 저장에 실패했습니다.', 'error');
-            }
-        }
-        
+        let cashSales = [];
+        let businessSales = [];
+        let expenses = [];
+        let clients = [];
+        let currentUser = null;
+
         // 알림 표시
-        function showNotification(message, type = 'info') {
+        function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.className = `notification ${type}`;
+            notification.className = 'notification ' + type;
             notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            setTimeout(() => notification.classList.remove('show'), 3000);
         }
-        
-        // 탭 전환 함수
-        function switchTab(tab, buttonElement) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const screens = document.querySelectorAll('.screen');
+
+        // 로그인
+        function doLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
             
-            tabs.forEach(t => t.classList.remove('active'));
-            screens.forEach(s => s.classList.remove('active'));
+            if (!username || !password) {
+                showNotification('사용자명과 비밀번호를 입력해주세요.', 'error');
+                return;
+            }
             
-            buttonElement.classList.add('active');
-            document.getElementById(tab + '-screen').classList.add('active');
-            
-            if (tab === 'stats') {
-                updateStats();
+            if (username === 'admin' && password === '1234') {
+                currentUser = username;
+                document.getElementById('current-user').textContent = username;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-screen').style.display = 'flex';
+                init();
+                showNotification(username + '님, 환영합니다!', 'success');
+            } else {
+                showNotification('사용자명 또는 비밀번호가 잘못되었습니다.', 'error');
             }
         }
-        
-        // 부가세 자동 계산
+
+        // 로그아웃
+        function doLogout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                currentUser = null;
+                document.getElementById('app-screen').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // 화면 전환
+        function switchScreen(screen, button) {
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById(screen + '-screen').classList.add('active');
+            
+            if (screen === 'stats') {
+                setTimeout(() => {
+                    drawSalesExpenseChart();
+                    drawMonthlyComparisonChart();
+                    drawMonthlyTaxChart();
+                }, 100);
+            }
+        }
+
+        // 초기화
+        function init() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('cash-date').value = today;
+            document.getElementById('business-date').value = today;
+            document.getElementById('expense-date').value = today;
+            
+            loadData();
+            updateTables();
+            updateSummaries();
+        }
+
+        // 데이터 로드/저장
+        function loadData() {
+            if (!currentUser) return;
+            const prefix = currentUser + '_';
+            cashSales = JSON.parse(localStorage.getItem(prefix + 'cashSales') || '[]');
+            businessSales = JSON.parse(localStorage.getItem(prefix + 'businessSales') || '[]');
+            expenses = JSON.parse(localStorage.getItem(prefix + 'expenses') || '[]');
+            clients = JSON.parse(localStorage.getItem(prefix + 'clients') || '[]');
+        }
+
+        function saveData() {
+            if (!currentUser) return;
+            const prefix = currentUser + '_';
+            localStorage.setItem(prefix + 'cashSales', JSON.stringify(cashSales));
+            localStorage.setItem(prefix + 'businessSales', JSON.stringify(businessSales));
+            localStorage.setItem(prefix + 'expenses', JSON.stringify(expenses));
+            localStorage.setItem(prefix + 'clients', JSON.stringify(clients));
+        }
+
+        // 부가세 계산
         function calculateTax() {
             const total = parseInt(document.getElementById('business-amount').value) || 0;
             const tax = Math.round(total / 11);
             document.getElementById('business-tax').value = tax;
         }
-        
-        // 지출 카테고리 업데이트
-        function updateExpenseCategory() {
-            const type = document.getElementById('expense-type').value;
-            const categoryGroup = document.getElementById('expense-category-group');
-            const categorySelect = document.getElementById('expense-category');
-            
-            if (type === '일반지출') {
-                categoryGroup.style.display = 'block';
-                categorySelect.innerHTML = '<option value="">카테고리 선택</option>' +
-                    '<option value="식대">식대</option>' +
-                    '<option value="유류비">유류비</option>' +
-                    '<option value="공과금">공과금</option>' +
-                    '<option value="잡지출">잡지출</option>';
-            } else if (type === '고정지출') {
-                categoryGroup.style.display = 'block';
-                categorySelect.innerHTML = '<option value="고정지출">고정지출</option>';
-                categorySelect.value = '고정지출';
-            } else {
-                categoryGroup.style.display = 'none';
-            }
-        }
-        
+
         // 현금매출 추가
         function addCashSale() {
             const date = document.getElementById('cash-date').value;
@@ -577,338 +538,113 @@ let currentStatsMode = 'current';
                 return;
             }
             
-const newSale = {
-    id: Date.now(),
-    date: date,
-    customer: customer,
-    product: product,
-    amount: amount,
-    route: route,
-    memo: memo,
-    timestamp: new Date()
-};
-
-cashSales.unshift(newSale);  //
-saveToStorage();  //
-renderCashTable();  //
-updateSummaries();
-clearCashForm();
-showNotification('현금매출이 추가되었습니다.', 'success');
+            cashSales.unshift({
+                id: Date.now(),
+                date: date,
+                customer: customer,
+                product: product,
+                amount: amount,
+                route: route,
+                memo: memo
+            });
+            
+            saveData();
+            updateTables();
+            updateSummaries();
+            clearCashForm();
+            showNotification('현금매출이 추가되었습니다.', 'success');
         }
-        
+
         // 사업자매출 추가
         function addBusinessSale() {
             const date = document.getElementById('business-date').value;
-            const clientId = document.getElementById('business-client').value;
-            const customer = document.getElementById('business-customer').value;
+            const client = document.getElementById('business-client').value;
             const product = document.getElementById('business-product').value;
             const amount = parseInt(document.getElementById('business-amount').value) || 0;
             const tax = parseInt(document.getElementById('business-tax').value) || 0;
             const memo = document.getElementById('business-memo').value;
             
-            if (!date || !clientId || !product || !amount) {
+            if (!date || !client || !product || !amount) {
                 showNotification('필수 항목을 모두 입력해주세요.', 'error');
                 return;
             }
             
-            let client = null;
-            if (clientId === 'smartstore') {
-                client = {
-                    id: 'smartstore',
-                    company: '네이버 스마트스토어',
-                    ceo: '네이버',
-                    businessNumber: '-'
-                };
-            } else if (clientId === '카드매출') {
-                client = {
-                    id: '카드매출',
-                    company: '카드매출',
-                    ceo: '-',
-                    businessNumber: '-'
-                };
-            } else if (clientId === '도급') {
-                client = {
-                    id: '도급',
-                    company: '도급',
-                    ceo: '-',
-                    businessNumber: '-'
-                };
-            } else {
-                client = clients.find(c => c.id == clientId);
-            }
+            businessSales.unshift({
+                id: Date.now(),
+                date: date,
+                client: client,
+                product: product,
+                amount: amount,
+                tax: tax,
+                supplyAmount: amount - tax,
+                memo: memo
+            });
             
-            if (!client) {
-                showNotification('선택된 거래처 정보를 찾을 수 없습니다.', 'error');
-                return;
-            }
-            
-           const newSale = {
-    id: Date.now(),
-    date: date,
-    clientId: clientId,
-    client: client,
-    customer: customer,
-    product: product,
-    amount: amount,
-    tax: tax,
-    supplyAmount: amount - tax,
-    memo: memo,
-    timestamp: new Date()
-};
-
-businessSales.unshift(newSale);
-saveToStorage();
-renderBusinessTable();
-updateSummaries();
-clearBusinessForm();
-showNotification('사업자매출이 추가되었습니다.', 'success');
+            saveData();
+            updateTables();
+            updateSummaries();
+            clearBusinessForm();
+            showNotification('사업자매출이 추가되었습니다.', 'success');
         }
-        
+
         // 지출 추가
         function addExpense() {
             const date = document.getElementById('expense-date').value;
-            const type = document.getElementById('expense-type').value;
+            const vendor = document.getElementById('expense-vendor').value;
             const category = document.getElementById('expense-category').value;
-            const description = document.getElementById('expense-description').value;
             const amount = parseInt(document.getElementById('expense-amount').value) || 0;
             const memo = document.getElementById('expense-memo').value;
             
-            if (!date || !type || !category || !description || !amount) {
+            if (!date || !vendor || !category || !amount) {
                 showNotification('필수 항목을 모두 입력해주세요.', 'error');
                 return;
             }
             
-            expenses.push({
+            expenses.unshift({
                 id: Date.now(),
                 date: date,
-                type: type,
+                vendor: vendor,
                 category: category,
-                description: description,
                 amount: amount,
                 memo: memo
             });
-
-            saveToStorage();
-            renderExpenseTable();
+            
+            saveData();
+            updateTables();
             updateSummaries();
             clearExpenseForm();
             showNotification('지출이 추가되었습니다.', 'success');
         }
-        
+
         // 거래처 추가
         function addClient() {
-            const company = document.getElementById('client-company').value;
+            const name = document.getElementById('client-name').value;
             const businessNumber = document.getElementById('client-business-number').value;
-            const ceo = document.getElementById('client-ceo').value;
-            const phone = document.getElementById('client-phone').value;
+            const contact = document.getElementById('client-contact').value;
+            const address = document.getElementById('client-address').value;
             const memo = document.getElementById('client-memo').value;
             
-            if (!company || !businessNumber || !ceo) {
-                showNotification('회사명, 사업자등록번호, 대표자명은 필수 입력 항목입니다.', 'error');
+            if (!name) {
+                showNotification('거래처명을 입력해주세요.', 'error');
                 return;
             }
             
-            clients.push({
+            clients.unshift({
                 id: Date.now(),
-                company: company,
+                name: name,
                 businessNumber: businessNumber,
-                ceo: ceo,
-                phone: phone,
-                memo: memo,
-                registeredDate: new Date().toISOString().split('T')[0]
+                contact: contact,
+                address: address,
+                memo: memo
             });
-
-            saveToStorage();
-            renderClientTable();
-            updateClientSelect();
-            updateSummaries();
+            
+            saveData();
+            updateTables();
             clearClientForm();
-            showNotification('거래처가 등록되었습니다.', 'success');
+            showNotification('거래처가 추가되었습니다.', 'success');
         }
-        
-        // 테이블 렌더링 함수들
-        function renderCashTable() {
-            const tbody = document.getElementById('cash-table');
-            if (cashSales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 현금매출이 없습니다</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            cashSales.forEach(sale => {
-                html += `<tr>
-                    <td>${sale.date}</td>
-                    <td>${sale.customer || '-'}</td>
-                    <td>${sale.product}</td>
-                    <td>₩${sale.amount.toLocaleString()}</td>
-                    <td>${sale.route}</td>
-                    <td>${sale.memo || '-'}</td>
-                    <td><button class="delete-btn" onclick="deleteCash('${sale.id}')">삭제</button></td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        function renderBusinessTable() {
-            const tbody = document.getElementById('business-table');
-            if (businessSales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">등록된 사업자매출이 없습니다</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            businessSales.forEach(sale => {
-                html += `<tr>
-                    <td>${sale.date}</td>
-                    <td>${sale.client.company}</td>
-                    <td>${sale.customer || '-'}</td>
-                    <td>${sale.product}</td>
-                    <td>₩${sale.supplyAmount.toLocaleString()}</td>
-                    <td>₩${sale.tax.toLocaleString()}</td>
-                    <td>₩${sale.amount.toLocaleString()}</td>
-                    <td>${sale.memo || '-'}</td>
-                    <td><button class="delete-btn" onclick="deleteBusiness('${sale.id}')">삭제</button></td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        function renderExpenseTable() {
-            const tbody = document.getElementById('expense-table');
-            if (expenses.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 지출이 없습니다</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            expenses.forEach(expense => {
-                html += `<tr>
-                    <td>${expense.date}</td>
-                    <td>${expense.type}</td>
-                    <td>${expense.category}</td>
-                    <td>${expense.description}</td>
-                    <td>₩${expense.amount.toLocaleString()}</td>
-                    <td>${expense.memo || '-'}</td>
-                    <td><button class="delete-btn" onclick="deleteExpense(${expense.id})">삭제</button></td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        function renderClientTable() {
-            const tbody = document.getElementById('client-table');
-            if (clients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 거래처가 없습니다</td></tr>';
-                return;
-            }
-            
-            let html = '';
-            clients.forEach(client => {
-                html += `<tr>
-                    <td>${client.company}</td>
-                    <td>${client.businessNumber}</td>
-                    <td>${client.ceo}</td>
-                    <td>${client.phone || '-'}</td>
-                    <td>${client.registeredDate}</td>
-                    <td><button class="delete-btn" onclick="deleteClient(${client.id})">삭제</button></td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-        }
-        
-        // 거래처 선택 드롭다운 업데이트
-        function updateClientSelect() {
-            const select = document.getElementById('business-client');
-            if (!select) return;
-            
-            select.innerHTML = '<option value="">거래처를 선택하세요</option>';
-            select.innerHTML += '<option value="smartstore">스마트스토어</option>';
-            select.innerHTML += '<option value="platform">플랫폼</option>';
-            select.innerHTML += '<option value="도급">도급</option>';
-            select.innerHTML += '<option value="카드매출">카드매출</option>';
-            
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = `${client.company} (${client.ceo})`;
-                select.appendChild(option);
-            });
-        }
-        
-        // 요약 정보 업데이트
-        function updateSummaries() {
-            // 현금매출 요약
-            const cashTotal = cashSales.reduce((sum, sale) => sum + sale.amount, 0);
-            document.getElementById('cash-total').textContent = '₩' + cashTotal.toLocaleString();
-            document.getElementById('cash-count').textContent = cashSales.length + '건';
-            
-            // 사업자매출 요약
-            const businessTotal = businessSales.reduce((sum, sale) => sum + sale.amount, 0);
-            document.getElementById('business-total').textContent = '₩' + businessTotal.toLocaleString();
-            document.getElementById('business-count').textContent = businessSales.length + '건';
-            
-            // 지출 요약
-            const expenseTotal = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-            document.getElementById('expense-total').textContent = '₩' + expenseTotal.toLocaleString();
-            document.getElementById('expense-count').textContent = expenses.length + '건';
-            
-            // 거래처 요약
-            document.getElementById('client-total').textContent = clients.length + '개';
-            
-            // 통계 화면 요약
-            const totalSales = cashTotal + businessTotal;
-            const totalCount = cashSales.length + businessSales.length;
-            const netProfit = totalSales - expenseTotal;
-            
-            document.getElementById('total-sales').textContent = '₩' + totalSales.toLocaleString();
-            document.getElementById('total-expenses').textContent = '₩' + expenseTotal.toLocaleString();
-            document.getElementById('net-profit').textContent = '₩' + netProfit.toLocaleString();
-            document.getElementById('total-count').textContent = totalCount + '건';
-        }
-        
-        // 삭제 함수들
-        function deleteCash(id) {
-            if (!confirm('정말 삭제하시겠습니까?')) return;
-            
-            cashSales = cashSales.filter(sale => sale.id !== id);
-saveToStorage();
-renderCashTable();
-updateSummaries();
-showNotification('현금매출이 삭제되었습니다.', 'success');
-        }
-        
-        function deleteBusiness(id) {
-            if (!confirm('정말 삭제하시겠습니까?')) return;
-            
-            businessSales = businessSales.filter(sale => sale.id !== id);
-saveToStorage();
-renderBusinessTable();
-updateSummaries();
-showNotification('사업자매출이 삭제되었습니다.', 'success');
-        }
-        
-        function deleteExpense(id) {
-            if (!confirm('정말 삭제하시겠습니까?')) return;
-            
-            expenses = expenses.filter(expense => expense.id !== id);
-            saveToStorage();
-            renderExpenseTable();
-            updateSummaries();
-            showNotification('지출이 삭제되었습니다.', 'success');
-        }
-        
-        function deleteClient(id) {
-            if (!confirm('정말 삭제하시겠습니까?')) return;
-            
-            clients = clients.filter(client => client.id !== id);
-            saveToStorage();
-            renderClientTable();
-            updateClientSelect();
-            updateSummaries();
-            showNotification('거래처가 삭제되었습니다.', 'success');
-        }
-        
-        // 폼 초기화 함수들
+
+        // 폼 초기화
         function clearCashForm() {
             document.getElementById('cash-customer').value = '';
             document.getElementById('cash-product').value = '';
@@ -916,191 +652,572 @@ showNotification('사업자매출이 삭제되었습니다.', 'success');
             document.getElementById('cash-route').value = '';
             document.getElementById('cash-memo').value = '';
         }
-        
+
         function clearBusinessForm() {
             document.getElementById('business-client').value = '';
-            document.getElementById('business-customer').value = '';
             document.getElementById('business-product').value = '';
             document.getElementById('business-amount').value = '';
             document.getElementById('business-tax').value = '';
             document.getElementById('business-memo').value = '';
         }
-        
+
         function clearExpenseForm() {
-            document.getElementById('expense-type').value = '';
+            document.getElementById('expense-vendor').value = '';
             document.getElementById('expense-category').value = '';
-            document.getElementById('expense-description').value = '';
             document.getElementById('expense-amount').value = '';
             document.getElementById('expense-memo').value = '';
-            document.getElementById('expense-category-group').style.display = 'none';
         }
-        
+
         function clearClientForm() {
-            document.getElementById('client-company').value = '';
+            document.getElementById('client-name').value = '';
             document.getElementById('client-business-number').value = '';
-            document.getElementById('client-ceo').value = '';
-            document.getElementById('client-phone').value = '';
+            document.getElementById('client-contact').value = '';
+            document.getElementById('client-address').value = '';
             document.getElementById('client-memo').value = '';
         }
-        
-        // 통계 기간 설정
-        function setPeriod(mode, buttonElement) {
-            currentStatsMode = mode;
-            const tabs = document.querySelectorAll('.period-tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            buttonElement.classList.add('active');
-            updateStats();
+
+        // 삭제 기능 (차트 강제 업데이트 포함)
+        function deleteItem(type, index) {
+            console.log('삭제 시도:', type, index);
+            
+            try {
+                let message = '';
+                console.log('삭제 전 배열 길이:', 
+                    type === 'cash' ? cashSales.length : 
+                    type === 'business' ? businessSales.length :
+                    type === 'expense' ? expenses.length :
+                    clients.length
+                );
+                
+                switch(type) {
+                    case 'cash':
+                        cashSales.splice(index, 1);
+                        message = '현금매출이 삭제되었습니다.';
+                        break;
+                    case 'business':
+                        businessSales.splice(index, 1);
+                        message = '사업자매출이 삭제되었습니다.';
+                        // 사업자매출 삭제 시 부가세 차트 강제 업데이트
+                        setTimeout(() => {
+                            drawMonthlyTaxChart();
+                        }, 50);
+                        break;
+                    case 'expense':
+                        expenses.splice(index, 1);
+                        message = '지출이 삭제되었습니다.';
+                        break;
+                    case 'client':
+                        clients.splice(index, 1);
+                        message = '거래처가 삭제되었습니다.';
+                        break;
+                }
+                
+                console.log('삭제 후 배열 길이:', 
+                    type === 'cash' ? cashSales.length : 
+                    type === 'business' ? businessSales.length :
+                    type === 'expense' ? expenses.length :
+                    clients.length
+                );
+                
+                saveData();
+                updateTables();
+                updateSummaries();
+                
+                // 모든 차트 강제 업데이트
+                setTimeout(() => {
+                    drawSalesExpenseChart();
+                    drawMonthlyComparisonChart();
+                    drawMonthlyTaxChart();
+                }, 100);
+                
+                showNotification(message, 'success');
+                
+            } catch (error) {
+                console.error('삭제 에러:', error);
+                showNotification('삭제 중 오류가 발생했습니다.', 'error');
+            }
         }
-        
-        // 통계 업데이트
-        function updateStats() {
+
+        // 테이블 업데이트
+        function updateTables() {
+            // 현금매출 테이블
+            const cashTbody = document.getElementById('cash-table');
+            if (cashSales.length === 0) {
+                cashTbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 현금매출이 없습니다</td></tr>';
+            } else {
+                let html = '';
+                cashSales.forEach((sale, index) => {
+                    html += `<tr>
+                        <td>${sale.date}</td>
+                        <td>${sale.customer || '-'}</td>
+                        <td>${sale.product}</td>
+                        <td>₩${sale.amount.toLocaleString()}</td>
+                        <td>${sale.route}</td>
+                        <td>${sale.memo || '-'}</td>
+                        <td><button class="delete-btn" onclick="deleteItem('cash', ${index})">삭제</button></td>
+                    </tr>`;
+                });
+                cashTbody.innerHTML = html;
+            }
+            
+            // 사업자매출 테이블
+            const businessTbody = document.getElementById('business-table');
+            if (businessSales.length === 0) {
+                businessTbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 사업자매출이 없습니다</td></tr>';
+            } else {
+                let html = '';
+                businessSales.forEach((sale, index) => {
+                    html += `<tr>
+                        <td>${sale.date}</td>
+                        <td>${sale.client}</td>
+                        <td>${sale.product}</td>
+                        <td>₩${sale.supplyAmount.toLocaleString()}</td>
+                        <td>₩${sale.tax.toLocaleString()}</td>
+                        <td>₩${sale.amount.toLocaleString()}</td>
+                        <td>${sale.memo || '-'}</td>
+                        <td><button class="delete-btn" onclick="deleteItem('business', ${index})">삭제</button></td>
+                    </tr>`;
+                });
+                businessTbody.innerHTML = html;
+            }
+
+            // 지출 테이블
+            const expenseTbody = document.getElementById('expense-table');
+            if (expenses.length === 0) {
+                expenseTbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 지출이 없습니다</td></tr>';
+            } else {
+                let html = '';
+                expenses.forEach((expense, index) => {
+                    html += `<tr>
+                        <td>${expense.date}</td>
+                        <td>${expense.vendor}</td>
+                        <td>${expense.category}</td>
+                        <td>₩${expense.amount.toLocaleString()}</td>
+                        <td>${expense.memo || '-'}</td>
+                        <td><button class="delete-btn" onclick="deleteItem('expense', ${index})">삭제</button></td>
+                    </tr>`;
+                });
+                expenseTbody.innerHTML = html;
+            }
+
+            // 거래처 테이블
+            const clientTbody = document.getElementById('client-table');
+            if (clients.length === 0) {
+                clientTbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 거래처가 없습니다</td></tr>';
+            } else {
+                let html = '';
+                clients.forEach((client, index) => {
+                    html += `<tr>
+                        <td>${client.name}</td>
+                        <td>${client.businessNumber || '-'}</td>
+                        <td>${client.contact || '-'}</td>
+                        <td>${client.address || '-'}</td>
+                        <td>${client.memo || '-'}</td>
+                        <td><button class="delete-btn" onclick="deleteItem('client', ${index})">삭제</button></td>
+                    </tr>`;
+                });
+                clientTbody.innerHTML = html;
+            }
+        }
+
+        // 요약 정보 업데이트 (차트 갱신 포함)
+        function updateSummaries() {
+            const cashTotal = cashSales.reduce((sum, sale) => sum + sale.amount, 0);
+            const businessTotal = businessSales.reduce((sum, sale) => sum + sale.amount, 0);
+            const expenseTotal = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            const totalSales = cashTotal + businessTotal;
+            const netProfit = totalSales - expenseTotal;
+            
+            document.getElementById('cash-total').textContent = '₩' + cashTotal.toLocaleString();
+            document.getElementById('cash-count').textContent = cashSales.length + '건';
+            document.getElementById('business-total').textContent = '₩' + businessTotal.toLocaleString();
+            document.getElementById('business-count').textContent = businessSales.length + '건';
+            document.getElementById('expense-total').textContent = '₩' + expenseTotal.toLocaleString();
+            document.getElementById('expense-count').textContent = expenses.length + '건';
+            document.getElementById('total-sales').textContent = '₩' + totalSales.toLocaleString();
+            document.getElementById('total-expenses').textContent = '₩' + expenseTotal.toLocaleString();
+            document.getElementById('net-profit').textContent = '₩' + netProfit.toLocaleString();
+            document.getElementById('total-count').textContent = (cashSales.length + businessSales.length) + '건';
+            
             // 매출 루트별 통계
             const routeStats = {};
             cashSales.forEach(sale => {
-                const route = sale.route;
-                routeStats[route] = (routeStats[route] || 0) + sale.amount;
+                routeStats[sale.route] = (routeStats[sale.route] || 0) + sale.amount;
             });
             
             let routeHtml = '';
             if (Object.keys(routeStats).length === 0) {
-                routeHtml = '<div class="stats-item"><span class="stats-label">데이터 없음</span><span class="stats-value">-</span></div>';
+                routeHtml = '<div style="text-align: center; color: #6c757d;">데이터 없음</div>';
             } else {
                 Object.entries(routeStats).forEach(([route, amount]) => {
-                    routeHtml += `<div class="stats-item">
-                        <span class="stats-label">${route}</span>
-                        <span class="stats-value">₩${amount.toLocaleString()}</span>
-                    </div>`;
+                    routeHtml += '<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e9ecef;"><span>' + route + '</span><span style="font-weight: 600;">₩' + amount.toLocaleString() + '</span></div>';
                 });
             }
             document.getElementById('route-stats').innerHTML = routeHtml;
-            
-            // 지출 카테고리별 통계
+
+            // 지출 항목별 통계
             const expenseStats = {};
             expenses.forEach(expense => {
-                const category = expense.category;
-                expenseStats[category] = (expenseStats[category] || 0) + expense.amount;
+                expenseStats[expense.category] = (expenseStats[expense.category] || 0) + expense.amount;
             });
             
             let expenseHtml = '';
             if (Object.keys(expenseStats).length === 0) {
-                expenseHtml = '<div class="stats-item"><span class="stats-label">데이터 없음</span><span class="stats-value">-</span></div>';
+                expenseHtml = '<div style="text-align: center; color: #6c757d;">데이터 없음</div>';
             } else {
                 Object.entries(expenseStats).forEach(([category, amount]) => {
-                    expenseHtml += `<div class="stats-item">
-                        <span class="stats-label">${category}</span>
-                        <span class="stats-value">₩${amount.toLocaleString()}</span>
-                    </div>`;
+                    expenseHtml += '<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e9ecef;"><span>' + category + '</span><span style="font-weight: 600;">₩' + amount.toLocaleString() + '</span></div>';
                 });
             }
             document.getElementById('expense-stats').innerHTML = expenseHtml;
-        }
-        
-        // 엑셀 다운로드
-        function downloadExcel() {
-            try {
-                const wb = XLSX.utils.book_new();
-                
-                // 현금매출 시트
-                const cashHeaders = ['날짜', '고객명', '상품/서비스', '매출금액', '매출루트', '비고'];
-                const cashData = [cashHeaders];
-                
-                cashSales.forEach(sale => {
-                    cashData.push([
-                        sale.date,
-                        sale.customer || '',
-                        sale.product,
-                        sale.amount,
-                        sale.route,
-                        sale.memo || ''
-                    ]);
-                });
-                
-                const cashWs = XLSX.utils.aoa_to_sheet(cashData);
-                XLSX.utils.book_append_sheet(wb, cashWs, '현금매출');
-                
-                // 사업자매출 시트
-                const businessHeaders = ['날짜', '거래처명', '상품/서비스', '공급가액', '부가세', '총금액', '비고'];
-                const businessData = [businessHeaders];
-                
-                businessSales.forEach(sale => {
-                    businessData.push([
-                        sale.date,
-                        sale.client.company,
-                        sale.product,
-                        sale.supplyAmount,
-                        sale.tax,
-                        sale.amount,
-                        sale.memo || ''
-                    ]);
-                });
-                
-                const businessWs = XLSX.utils.aoa_to_sheet(businessData);
-                XLSX.utils.book_append_sheet(wb, businessWs, '사업자매출');
-                
-                // 지출 시트
-                const expenseHeaders = ['날짜', '지출구분', '카테고리', '지출내역', '금액', '비고'];
-                const expenseData = [expenseHeaders];
-                
-                expenses.forEach(expense => {
-                    expenseData.push([
-                        expense.date,
-                        expense.type,
-                        expense.category,
-                        expense.description,
-                        expense.amount,
-                        expense.memo || ''
-                    ]);
-                });
-                
-                const expenseWs = XLSX.utils.aoa_to_sheet(expenseData);
-                XLSX.utils.book_append_sheet(wb, expenseWs, '지출관리');
-                
-                // 거래처 시트
-                const clientHeaders = ['회사명', '사업자번호', '대표자', '연락처', '등록일', '비고'];
-                const clientData = [clientHeaders];
-                
-                clients.forEach(client => {
-                    clientData.push([
-                        client.company,
-                        client.businessNumber,
-                        client.ceo,
-                        client.phone || '',
-                        client.registeredDate,
-                        client.memo || ''
-                    ]);
-                });
-                
-                const clientWs = XLSX.utils.aoa_to_sheet(clientData);
-                XLSX.utils.book_append_sheet(wb, clientWs, '거래처목록');
-                
-                // 파일 다운로드
-                const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
-                XLSX.writeFile(wb, `매출관리_${today}.xlsx`);
-                
-                showNotification('엑셀 파일이 다운로드되었습니다!', 'success');
-            } catch (error) {
-                console.error('엑셀 다운로드 오류:', error);
-                showNotification('다운로드 중 오류가 발생했습니다.', 'error');
+            
+            // 통계 화면이 활성화된 경우 차트 즉시 업데이트
+            const statsScreen = document.getElementById('stats-screen');
+            if (statsScreen && statsScreen.classList.contains('active')) {
+                setTimeout(() => {
+                    drawSalesExpenseChart();
+                    drawMonthlyComparisonChart();
+                    drawMonthlyTaxChart();
+                }, 10);
             }
         }
-        
-        // 페이지 로드 시 초기화
-document.addEventListener('DOMContentLoaded', function() {
-    try {
-        init();
-    } catch (error) {
-        console.error('DOM 로드 후 초기화 오류:', error);
-    }
-});
 
-// 페이지 언로드 시 데이터 저장
-window.addEventListener('beforeunload', function() {
-    try {
-        saveToStorage();
-    } catch (error) {
-        console.error('페이지 종료 시 저장 오류:', error);
-    }
-});
+        // 차트 그리기 함수들
+        function drawSalesExpenseChart() {
+            const canvas = document.getElementById('sales-expense-chart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 120;
+            
+            const cashTotal = cashSales.reduce((sum, sale) => sum + sale.amount, 0);
+            const businessTotal = businessSales.reduce((sum, sale) => sum + sale.amount, 0);
+            const totalSales = cashTotal + businessTotal;
+            const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            
+            const total = totalSales + totalExpenses;
+            
+            if (total === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#666';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('데이터 없음', centerX, centerY);
+                return;
+            }
+            
+            const salesAngle = (totalSales / total) * 2 * Math.PI;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 매출 (파란색)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, salesAngle);
+            ctx.lineTo(centerX, centerY);
+            ctx.fillStyle = '#3498db';
+            ctx.fill();
+            
+            // 지출 (빨간색)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, salesAngle, 2 * Math.PI);
+            ctx.lineTo(centerX, centerY);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fill();
+            
+            // 범례
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'left';
+            
+            // 매출 범례
+            ctx.fillStyle = '#3498db';
+            ctx.fillRect(20, 20, 15, 15);
+            ctx.fillStyle = '#333';
+            ctx.fillText('매출: ₩' + totalSales.toLocaleString(), 40, 32);
+            
+            // 지출 범례
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(20, 45, 15, 15);
+            ctx.fillStyle = '#333';
+            ctx.fillText('지출: ₩' + totalExpenses.toLocaleString(), 40, 57);
+        }
+
+        function drawMonthlyComparisonChart() {
+            const canvas = document.getElementById('monthly-comparison-chart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // 이번달과 저번달 데이터 계산
+            const thisMonthSales = cashSales.concat(businessSales).filter(sale => {
+                const saleDate = new Date(sale.date);
+                return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+            }).reduce((sum, sale) => sum + sale.amount, 0);
+            
+            const thisMonthExpenses = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+            }).reduce((sum, expense) => sum + expense.amount, 0);
+            
+            let lastMonth = currentMonth - 1;
+            let lastYear = currentYear;
+            if (lastMonth < 0) {
+                lastMonth = 11;
+                lastYear = currentYear - 1;
+            }
+            
+            const lastMonthSales = cashSales.concat(businessSales).filter(sale => {
+                const saleDate = new Date(sale.date);
+                return saleDate.getMonth() === lastMonth && saleDate.getFullYear() === lastYear;
+            }).reduce((sum, sale) => sum + sale.amount, 0);
+            
+            const lastMonthExpenses = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getMonth() === lastMonth && expenseDate.getFullYear() === lastYear;
+            }).reduce((sum, expense) => sum + expense.amount, 0);
+            
+            const maxValue = Math.max(thisMonthSales, thisMonthExpenses, lastMonthSales, lastMonthExpenses);
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (maxValue === 0) {
+                ctx.fillStyle = '#666';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('데이터 없음', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            const barWidth = 60;
+            const barSpacing = 80;
+            const chartHeight = 120;
+            const startX = 50;
+            const startY = canvas.height - 50;
+            
+            // 저번달 매출
+            const lastSalesHeight = (lastMonthSales / maxValue) * chartHeight;
+            ctx.fillStyle = '#95a5a6';
+            ctx.fillRect(startX, startY - lastSalesHeight, barWidth, lastSalesHeight);
+            
+            // 저번달 지출
+            const lastExpenseHeight = (lastMonthExpenses / maxValue) * chartHeight;
+            ctx.fillStyle = '#bdc3c7';
+            ctx.fillRect(startX + barSpacing, startY - lastExpenseHeight, barWidth, lastExpenseHeight);
+            
+            // 이번달 매출
+            const thisSalesHeight = (thisMonthSales / maxValue) * chartHeight;
+            ctx.fillStyle = '#3498db';
+            ctx.fillRect(startX + barSpacing * 2, startY - thisSalesHeight, barWidth, thisSalesHeight);
+            
+            // 이번달 지출
+            const thisExpenseHeight = (thisMonthExpenses / maxValue) * chartHeight;
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(startX + barSpacing * 3, startY - thisExpenseHeight, barWidth, thisExpenseHeight);
+            
+            // 라벨
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            
+            ctx.fillText('전달매출', startX + barWidth/2, startY + 15);
+            ctx.fillText('전달지출', startX + barSpacing + barWidth/2, startY + 15);
+            ctx.fillText('이달매출', startX + barSpacing * 2 + barWidth/2, startY + 15);
+            ctx.fillText('이달지출', startX + barSpacing * 3 + barWidth/2, startY + 15);
+            
+            // 금액 표시 (막대 위에)
+            ctx.font = '10px Arial';
+            ctx.fillStyle = '#333';
+            
+            // 전달 매출 금액
+            if (lastMonthSales > 0) {
+                ctx.fillText('₩' + lastMonthSales.toLocaleString(), startX + barWidth/2, startY - lastSalesHeight - 5);
+            }
+            
+            // 전달 지출 금액
+            if (lastMonthExpenses > 0) {
+                ctx.fillText('₩' + lastMonthExpenses.toLocaleString(), startX + barSpacing + barWidth/2, startY - lastExpenseHeight - 5);
+            }
+            
+            // 이달 매출 금액
+            if (thisMonthSales > 0) {
+                ctx.fillText('₩' + thisMonthSales.toLocaleString(), startX + barSpacing * 2 + barWidth/2, startY - thisSalesHeight - 5);
+            }
+            
+            // 이달 지출 금액
+            if (thisMonthExpenses > 0) {
+                ctx.fillText('₩' + thisMonthExpenses.toLocaleString(), startX + barSpacing * 3 + barWidth/2, startY - thisExpenseHeight - 5);
+            }
+        }
+
+        function drawMonthlyTaxChart() {
+            const canvas = document.getElementById('monthly-tax-chart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const currentYear = new Date().getFullYear();
+            
+            console.log('부가세 차트 그리기 시작');
+            console.log('현재 사업자매출 데이터:', businessSales);
+            
+            // 월별 부가세 계산 - 완전히 새로 계산
+            const monthlyTax = new Array(12).fill(0);
+            
+            // 현재 존재하는 사업자매출만 계산
+            businessSales.forEach((sale, index) => {
+                console.log(`사업자매출 ${index}:`, sale);
+                const saleDate = new Date(sale.date);
+                if (saleDate.getFullYear() === currentYear) {
+                    const month = saleDate.getMonth();
+                    const tax = sale.tax || 0;
+                    monthlyTax[month] += tax;
+                    console.log(`${month + 1}월에 부가세 ${tax} 추가, 총합: ${monthlyTax[month]}`);
+                }
+            });
+            
+            console.log('최종 월별 부가세:', monthlyTax);
+            
+            const maxTax = Math.max(...monthlyTax);
+            console.log('최대 부가세:', maxTax);
+            
+            // 캔버스 완전히 지우기
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (maxTax === 0) {
+                ctx.fillStyle = '#666';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('부가세 데이터 없음', canvas.width / 2, canvas.height / 2);
+                
+                // 요약도 업데이트
+                const summaryDiv = document.getElementById('monthly-tax-summary');
+                if (summaryDiv) {
+                    summaryDiv.innerHTML = `
+                        <div style="text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>${currentYear}년 총 부가세: ₩0</strong>
+                        </div>
+                    `;
+                }
+                return;
+            }
+            
+            const barWidth = 25;
+            const barSpacing = 30;
+            const chartHeight = 120;
+            const startX = 30;
+            const startY = canvas.height - 40;
+            
+            monthlyTax.forEach((tax, index) => {
+                const barHeight = (tax / maxTax) * chartHeight;
+                const x = startX + index * barSpacing;
+                
+                ctx.fillStyle = tax > 0 ? '#27ae60' : '#bdc3c7';
+                ctx.fillRect(x, startY - barHeight, barWidth, barHeight);
+                
+                // 월 라벨
+                ctx.fillStyle = '#333';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText((index + 1) + '월', x + barWidth/2, startY + 15);
+                
+                // 금액 표시 (0이 아닌 경우만)
+                if (tax > 0) {
+                    ctx.font = '8px Arial';
+                    ctx.fillText('₩' + tax.toLocaleString(), x + barWidth/2, startY - barHeight - 5);
+                }
+            });
+            
+            // 연간 총 부가세 계산 및 표시
+            const totalYearlyTax = monthlyTax.reduce((sum, tax) => sum + tax, 0);
+            console.log('연간 총 부가세:', totalYearlyTax);
+            
+            const summaryDiv = document.getElementById('monthly-tax-summary');
+            if (summaryDiv) {
+                summaryDiv.innerHTML = `
+                    <div style="text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                        <strong>${currentYear}년 총 부가세: ₩${totalYearlyTax.toLocaleString()}</strong>
+                    </div>
+                `;
+            }
+        }
+
+        // 엑셀 다운로드
+        function downloadExcel() {
+            const wb = XLSX.utils.book_new();
+            
+            // 현금매출 시트
+            const cashData = [
+                ['날짜', '고객명', '상품/서비스', '금액', '매출루트', '비고']
+            ];
+            cashSales.forEach(sale => {
+                cashData.push([sale.date, sale.customer || '', sale.product, sale.amount, sale.route, sale.memo || '']);
+            });
+            const cashWs = XLSX.utils.aoa_to_sheet(cashData);
+            XLSX.utils.book_append_sheet(wb, cashWs, '현금매출');
+            
+            // 사업자매출 시트
+            const businessData = [
+                ['날짜', '거래처명', '상품/서비스', '공급가액', '부가세', '총금액', '비고']
+            ];
+            businessSales.forEach(sale => {
+                businessData.push([sale.date, sale.client, sale.product, sale.supplyAmount, sale.tax, sale.amount, sale.memo || '']);
+            });
+            const businessWs = XLSX.utils.aoa_to_sheet(businessData);
+            XLSX.utils.book_append_sheet(wb, businessWs, '사업자매출');
+            
+            // 지출 시트
+            const expenseData = [
+                ['날짜', '지출처', '항목', '금액', '비고']
+            ];
+            expenses.forEach(expense => {
+                expenseData.push([expense.date, expense.vendor, expense.category, expense.amount, expense.memo || '']);
+            });
+            const expenseWs = XLSX.utils.aoa_to_sheet(expenseData);
+            XLSX.utils.book_append_sheet(wb, expenseWs, '지출');
+            
+            // 거래처 시트
+            const clientData = [
+                ['거래처명', '사업자번호', '연락처', '주소', '비고']
+            ];
+            clients.forEach(client => {
+                clientData.push([client.name, client.businessNumber || '', client.contact || '', client.address || '', client.memo || '']);
+            });
+            const clientWs = XLSX.utils.aoa_to_sheet(clientData);
+            XLSX.utils.book_append_sheet(wb, clientWs, '거래처');
+            
+            // 요약 시트
+            const cashTotal = cashSales.reduce((sum, sale) => sum + sale.amount, 0);
+            const businessTotal = businessSales.reduce((sum, sale) => sum + sale.amount, 0);
+            const expenseTotal = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            const totalSales = cashTotal + businessTotal;
+            const netProfit = totalSales - expenseTotal;
+            
+            const summaryData = [
+                ['매출 요약'],
+                ['구분', '금액', '건수'],
+                ['현금매출', cashTotal, cashSales.length],
+                ['사업자매출', businessTotal, businessSales.length],
+                ['총 매출', totalSales, cashSales.length + businessSales.length],
+                ['총 지출', expenseTotal, expenses.length],
+                ['순이익', netProfit, '']
+            ];
+            const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, summaryWs, '요약');
+            
+            const today = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, '매출관리_' + currentUser + '_' + today + '.xlsx');
+            showNotification('엑셀 파일이 다운로드되었습니다.', 'success');
+        }
+
+        // 엔터키로 로그인
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+                doLogin();
+            }
+        });
     </script>
 </body>
 </html>
